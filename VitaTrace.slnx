@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/VitaTrace.App/VitaTrace.App.csproj" />
+    <Project Path="src/VitaTrace.Core/VitaTrace.Core.csproj" />
+    <Project Path="src/VitaTrace.Infrastructure/VitaTrace.Infrastructure.csproj" />
+  </Folder>
+</Solution>

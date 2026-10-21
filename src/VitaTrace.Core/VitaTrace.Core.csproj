@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>VitaTrace.Core</RootNamespace>
+    <AssemblyName>VitaTrace.Core</AssemblyName>
+  </PropertyGroup>
+</Project>

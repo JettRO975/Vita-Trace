@@ -1,0 +1,44 @@
+# 构建与运行产物
+bin/
+obj/
+publish/
+*.user
+*.suo
+.vs/
+.idea/
+TestResults/
+
+# 发布包：本地生成，上传到 GitHub Releases，不提交进仓库
+dist/
+artifacts/
+*.zip
+*.sha256
+
+# 本地工具链（dotnet-install 解压到项目内，避免污染系统）
+.dotnet/
+.dotnet-home/
+.nuget/
+
+# 临时脚本、截图与下载
+.tmp/
+
+# 代码签名私钥/证书，绝不提交
+*.pfx
+*.p12
+*.snk
+*.pvk
+secrets/
+cert/
+
+# 本机数据（正常运行时会写到 %LOCALAPPDATA%\VitaTrace，此处仅防误提交）
+data/
+*.log
+
+# Windows 快捷方式 / 启动脚本（每台机器路径不同，不入库）
+*.lnk
+*.vbs
+
+# 系统杂项
+Thumbs.db
+Desktop.ini
+.DS_Store

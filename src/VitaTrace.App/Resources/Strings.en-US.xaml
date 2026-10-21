@@ -1,0 +1,161 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="AppName">Vita Trace</sys:String>
+    <sys:String x:Key="Tagline">Wireless device battery, at a glance</sys:String>
+
+    <sys:String x:Key="Devices">Devices</sys:String>
+    <sys:String x:Key="DeviceCount">{0} devices</sys:String>
+    <sys:String x:Key="DemoBadge">Demo data</sys:String>
+    <sys:String x:Key="DemoTitle">Interface demo mode</sys:String>
+    <sys:String x:Key="DemoHint">These devices and percentages are examples, not real readings. Real enumeration is available; battery reading arrives in phase 4.</sys:String>
+    <sys:String x:Key="Settings">Settings</sys:String>
+    <sys:String x:Key="Refresh">Refresh</sys:String>
+    <sys:String x:Key="Refreshing">Refreshing…</sys:String>
+    <sys:String x:Key="LastUpdated">Updated {0}</sys:String>
+    <sys:String x:Key="Source">Source</sys:String>
+    <sys:String x:Key="Confidence">Confidence</sys:String>
+    <sys:String x:Key="Battery">Battery</sys:String>
+    <sys:String x:Key="History">Battery history</sys:String>
+    <sys:String x:Key="NoHistory">No history yet</sys:String>
+    <sys:String x:Key="HistoryHint">Each refresh adds a sample; gaps mean a reading failed.</sys:String>
+    <sys:String x:Key="SelectDevice">Select a device to see details</sys:String>
+    <sys:String x:Key="NoDevices">No devices detected yet</sys:String>
+    <sys:String x:Key="NoDevicesHint">Plug in a 2.4G receiver or connect a Bluetooth device and it will appear here.</sys:String>
+    <sys:String x:Key="EmptySelectionHint">Pick a device on the left to see its battery ring, history and details.</sys:String>
+
+    <sys:String x:Key="Detail">Device details</sys:String>
+    <sys:String x:Key="RenameDevice">Rename device</sys:String>
+    <sys:String x:Key="RenameHint">Enter a custom name; leave empty to restore the system name</sys:String>
+    <sys:String x:Key="Status">Status</sys:String>
+    <sys:String x:Key="Connection">Connection</sys:String>
+    <sys:String x:Key="Model">Model</sys:String>
+    <sys:String x:Key="Vendor">Vendor</sys:String>
+    <sys:String x:Key="VidPid">VID / PID</sys:String>
+    <sys:String x:Key="Path">Device path</sys:String>
+    <sys:String x:Key="Receiver">Receiver</sys:String>
+    <sys:String x:Key="Alias">Custom name</sys:String>
+    <sys:String x:Key="AliasHint">Changes the display name only; device identity is untouched.</sys:String>
+    <sys:String x:Key="Notes">Notes</sys:String>
+    <sys:String x:Key="Save">Save</sys:String>
+    <sys:String x:Key="Cancel">Cancel</sys:String>
+    <sys:String x:Key="Close">Close</sys:String>
+
+    <sys:String x:Key="LowBattery">Low battery</sys:String>
+    <sys:String x:Key="LowBatteryBanner">Low battery alert</sys:String>
+    <sys:String x:Key="LowBatteryMessage">{0} is at {1}%. Replace the battery or charge it soon.</sys:String>
+
+    <sys:String x:Key="SettingsTitle">Settings</sys:String>
+    <sys:String x:Key="Appearance">Appearance</sys:String>
+    <sys:String x:Key="Theme">Theme</sys:String>
+    <sys:String x:Key="ThemeSystem">System</sys:String>
+    <sys:String x:Key="ThemeLight">Light</sys:String>
+    <sys:String x:Key="ThemeDark">Dark</sys:String>
+    <sys:String x:Key="Language">Language</sys:String>
+    <sys:String x:Key="LanguageSystem">System</sys:String>
+    <sys:String x:Key="LanguageZh">简体中文</sys:String>
+    <sys:String x:Key="LanguageEn">English</sys:String>
+
+    <sys:String x:Key="Monitoring">Monitoring</sys:String>
+    <sys:String x:Key="RefreshInterval">Refresh interval</sys:String>
+    <sys:String x:Key="Seconds">seconds</sys:String>
+    <sys:String x:Key="LowThreshold">Low battery threshold</sys:String>
+    <sys:String x:Key="Percent">percent</sys:String>
+    <sys:String x:Key="HistoryRetention">Keep history</sys:String>
+    <sys:String x:Key="Days">days</sys:String>
+    <sys:String x:Key="MonitoringHint">Shorter intervals are fresher but put more load on HID / Bluetooth. 60 seconds is a good default.</sys:String>
+
+    <sys:String x:Key="Behavior">Behavior</sys:String>
+    <sys:String x:Key="StartWithWindows">Start with Windows</sys:String>
+    <sys:String x:Key="StartWithWindowsHint">Writes a per-user startup entry only; no admin rights required.</sys:String>
+    <sys:String x:Key="MinimizeToTray">Minimize to tray on close</sys:String>
+    <sys:String x:Key="MinimizeToTrayHint">Keeps reading in the background. Double-click the tray icon to reopen.</sys:String>
+    <sys:String x:Key="LowBatteryNotify">Low battery alerts</sys:String>
+    <sys:String x:Key="LowBatteryNotifyHint">Shows a tray balloon and turns the tray icon red below the threshold.</sys:String>
+
+    <sys:String x:Key="About">About</sys:String>
+    <sys:String x:Key="Version">Version</sys:String>
+    <sys:String x:Key="LogFile">Log file</sys:String>
+    <sys:String x:Key="OpenLogFolder">Open log folder</sys:String>
+    <sys:String x:Key="DataFolder">Data folder</sys:String>
+    <sys:String x:Key="OpenDataFolder">Open data folder</sys:String>
+    <sys:String x:Key="OpenFolder">Open folder</sys:String>
+    <sys:String x:Key="LogHint">Attach the log when reporting compatibility issues. It contains no personal data.</sys:String>
+
+    <sys:String x:Key="SaveFailed">Save failed: {0}</sys:String>
+    <sys:String x:Key="LoadFailed">Could not load settings; defaults are in use: {0}</sys:String>
+    <sys:String x:Key="SettingsSaved">Settings saved</sys:String>
+    <sys:String x:Key="ValidationRefresh">Refresh interval must be between 15 and 3600 seconds.</sys:String>
+    <sys:String x:Key="ValidationThreshold">Low battery threshold must be between 5 and 50%.</sys:String>
+    <sys:String x:Key="ValidationHistory">History retention must be between 7 and 365 days.</sys:String>
+    <sys:String x:Key="AlreadyRunning">Vita Trace is already running. Open it from the system tray.</sys:String>
+    <sys:String x:Key="FatalError">An unhandled error occurred. Details were written to the log:\n{0}</sys:String>
+
+    <sys:String x:Key="Reading">Reading…</sys:String>
+    <sys:String x:Key="UnsupportedHint">No public battery channel is available for this device. Percentages are never invented.</sys:String>
+    <sys:String x:Key="ReadFailedHint">This read failed and will be retried. Check the log for details.</sys:String>
+    <sys:String x:Key="UnknownHint">Battery level is not available yet.</sys:String>
+    <sys:String x:Key="StaleHint">The reading is older than the freshness window and may be out of date.</sys:String>
+    <sys:String x:Key="DisconnectedHint">The device is disconnected; this is the last known reading.</sys:String>
+    <sys:String x:Key="ReceiverOfflineHint">The receiver is offline, so this device cannot be read.</sys:String>
+    <sys:String x:Key="WiredHint">This wired device is bus-powered and has no battery to monitor.</sys:String>
+
+    <sys:String x:Key="TrayOpen">Open Vita Trace</sys:String>
+    <sys:String x:Key="TrayRefresh">Refresh now</sys:String>
+    <sys:String x:Key="TrayExit">Exit</sys:String>
+    <sys:String x:Key="TrayLowBattery">Vita Trace · Low battery</sys:String>
+    <sys:String x:Key="TrayLowBatteryBody">{0} is at {1}%. Replace the battery or charge it soon.</sys:String>
+    <sys:String x:Key="TrayMinimized">Vita Trace is still running</sys:String>
+    <sys:String x:Key="TrayMinimizedBody">The icon may be in the ^ overflow area; click or double-click it to reopen.</sys:String>
+
+    <sys:String x:Key="SourcePnp">Windows PnP</sys:String>
+    <sys:String x:Key="SourceBleGatt">BLE GATT</sys:String>
+    <sys:String x:Key="SourceHidpp">Logitech HID++</sys:String>
+    <sys:String x:Key="SourceCompxHid">CompX vendor protocol</sys:String>
+    <sys:String x:Key="SourceMchoseHid">MCHOSE keyboard frame 0x13/0x4A</sys:String>
+    <sys:String x:Key="SourceRapooHid">Rapoo 2.4G status frame</sys:String>
+    <sys:String x:Key="SourceStandardHid">Standard HID</sys:String>
+    <sys:String x:Key="SourceManual">Manual</sys:String>
+    <sys:String x:Key="SourceNone">—</sys:String>
+
+    <sys:String x:Key="ConfidenceHigh">High</sys:String>
+    <sys:String x:Key="ConfidenceMedium">Medium</sys:String>
+    <sys:String x:Key="ConfidenceLow">Low</sys:String>
+    <sys:String x:Key="ConfidenceUnknown">Unknown</sys:String>
+
+    <sys:String x:Key="StatusOk">OK</sys:String>
+    <sys:String x:Key="StatusStale">Stale</sys:String>
+    <sys:String x:Key="StatusReadFailed">Read failed</sys:String>
+    <sys:String x:Key="StatusUnsupported">Not supported</sys:String>
+    <sys:String x:Key="StatusDisconnected">Disconnected</sys:String>
+    <sys:String x:Key="StatusReceiverOffline">Receiver offline</sys:String>
+    <sys:String x:Key="StatusWired">Wired</sys:String>
+    <sys:String x:Key="StatusUnknown">Unknown</sys:String>
+
+    <sys:String x:Key="KindKeyboard">Keyboard</sys:String>
+    <sys:String x:Key="KindMouse">Mouse</sys:String>
+    <sys:String x:Key="KindHeadset">Headset</sys:String>
+    <sys:String x:Key="KindGamepad">Gamepad</sys:String>
+    <sys:String x:Key="KindReceiver">Receiver</sys:String>
+    <sys:String x:Key="KindOther">Other device</sys:String>
+    <sys:String x:Key="KindUnknown">Unknown device</sys:String>
+
+    <sys:String x:Key="ConnectionUsbReceiver">2.4G receiver</sys:String>
+    <sys:String x:Key="ConnectionBluetooth">Bluetooth</sys:String>
+    <sys:String x:Key="ConnectionWired">Wired</sys:String>
+    <sys:String x:Key="ConnectionUnknown">Unknown</sys:String>
+
+    <sys:String x:Key="ChartRange">Last {0} samples</sys:String>
+    <sys:String x:Key="Minimize">Minimize</sys:String>
+    <sys:String x:Key="Maximize">Maximize</sys:String>
+    <sys:String x:Key="Restore">Restore</sys:String>
+    <sys:String x:Key="CloseWindow">Close</sys:String>
+    <sys:String x:Key="RefreshTooltip">Refresh now (F5)</sys:String>
+    <sys:String x:Key="AppVersion">Version 0.7.0 · Phase 7 testing &amp; packaging</sys:String>
+    <sys:String x:Key="FooterPhase">Nothing is uploaded; readings and history stay on this PC, errors go to the log.</sys:String>
+    <sys:String x:Key="ReceiverConnected">Receiver connected</sys:String>
+    <sys:String x:Key="PairedDeviceUnknown">Paired device unknown</sys:String>
+    <sys:String x:Key="ReceiverNoBattery">USB bus-powered; the receiver itself has no battery. Paired keyboards/mice need a vendor protocol to identify.</sys:String>
+    <sys:String x:Key="NotAvailable">—</sys:String>
+</ResourceDictionary>

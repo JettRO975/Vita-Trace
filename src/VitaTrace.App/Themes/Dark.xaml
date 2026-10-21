@@ -1,0 +1,26 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 深色主题：背景与卡片分层，避免大面积纯黑。 -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#13151A" />
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#191C22" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#1B1E25" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="#242832" />
+    <SolidColorBrush x:Key="CardBrush" Color="#1D2129" />
+    <SolidColorBrush x:Key="CardHoverBrush" Color="#252B37" />
+    <SolidColorBrush x:Key="BorderBrush" Color="#2E3440" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F1F3F8" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#AEB6C5" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#7A8396" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#6C9BFF" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#8AB0FF" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#243252" />
+    <SolidColorBrush x:Key="SuccessBrush" Color="#3DD68C" />
+    <SolidColorBrush x:Key="WarningBrush" Color="#F0B44A" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#FF6B70" />
+    <SolidColorBrush x:Key="RingTrackBrush" Color="#2A303C" />
+    <SolidColorBrush x:Key="BannerWarningBackgroundBrush" Color="#332A18" />
+    <SolidColorBrush x:Key="BannerWarningBorderBrush" Color="#5A4726" />
+    <SolidColorBrush x:Key="BannerInfoBackgroundBrush" Color="#1B2A44" />
+    <SolidColorBrush x:Key="BannerInfoBorderBrush" Color="#2C4470" />
+    <Color x:Key="WindowShadowColor">#70000000</Color>
+</ResourceDictionary>

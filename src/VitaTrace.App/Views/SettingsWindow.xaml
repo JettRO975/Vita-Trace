@@ -1,0 +1,265 @@
+<Window x:Class="VitaTrace.App.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource SettingsTitle}"
+        Icon="pack://application:,,,/Assets/VitaTrace.ico"
+        Width="620" Height="760"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="{DynamicResource AppFontFamily}"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Border Background="{DynamicResource WindowBackgroundBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="64" />
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Hidden"
+                          HorizontalScrollBarVisibility="Disabled" Padding="22,16,22,0">
+                <StackPanel>
+
+                    <!-- 外观 -->
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Appearance}" Style="{StaticResource SectionTitleStyle}" />
+
+                            <TextBlock Text="{DynamicResource Theme}" FontSize="13" Margin="0,0,0,8" />
+                            <ListBox ItemsSource="{Binding ThemeOptions}"
+                                     SelectedValue="{Binding Theme, Mode=TwoWay}"
+                                     SelectedValuePath="Value"
+                                     Background="Transparent" BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     Margin="0,0,0,16">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource OptionChipItemStyle}">
+                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Label}" FontSize="12"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <TextBlock Text="{DynamicResource Language}" FontSize="13" Margin="0,0,0,8" />
+                            <ListBox ItemsSource="{Binding LanguageOptions}"
+                                     SelectedValue="{Binding Language, Mode=TwoWay}"
+                                     SelectedValuePath="Value"
+                                     Background="Transparent" BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource OptionChipItemStyle}">
+                                        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Label}" FontSize="12"
+                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 监控 -->
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Monitoring}" Style="{StaticResource SectionTitleStyle}" />
+
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{DynamicResource RefreshInterval}" FontSize="13" />
+                                    <TextBlock Text="{DynamicResource MonitoringHint}" Style="{StaticResource TinyTextStyle}"
+                                               TextWrapping="Wrap" MaxWidth="390" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBox Width="76" Style="{StaticResource AppTextBoxStyle}"
+                                             TextAlignment="Right"
+                                             Text="{Binding RefreshSeconds, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock Text="{DynamicResource Seconds}" Margin="8,0,0,0"
+                                               VerticalAlignment="Center" FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{DynamicResource LowThreshold}" FontSize="13" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBox Width="76" Style="{StaticResource AppTextBoxStyle}"
+                                             TextAlignment="Right"
+                                             Text="{Binding LowBatteryThreshold, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock Text="{DynamicResource Percent}" Margin="8,0,0,0"
+                                               VerticalAlignment="Center" FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{DynamicResource HistoryRetention}" FontSize="13" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBox Width="76" Style="{StaticResource AppTextBoxStyle}"
+                                             TextAlignment="Right"
+                                             Text="{Binding HistoryRetentionDays, UpdateSourceTrigger=LostFocus}" />
+                                    <TextBlock Text="{DynamicResource Days}" Margin="8,0,0,0"
+                                               VerticalAlignment="Center" FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 行为 -->
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource Behavior}" Style="{StaticResource SectionTitleStyle}" />
+
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource StartWithWindows}" FontSize="13" />
+                                    <TextBlock Text="{DynamicResource StartWithWindowsHint}" Style="{StaticResource TinyTextStyle}"
+                                               TextWrapping="Wrap" MaxWidth="420" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" Style="{StaticResource ToggleSwitchStyle}"
+                                          IsChecked="{Binding StartWithWindows, Mode=TwoWay}"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource MinimizeToTray}" FontSize="13" />
+                                    <TextBlock Text="{DynamicResource MinimizeToTrayHint}" Style="{StaticResource TinyTextStyle}"
+                                               TextWrapping="Wrap" MaxWidth="420" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" Style="{StaticResource ToggleSwitchStyle}"
+                                          IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LowBatteryNotify}" FontSize="13" />
+                                    <TextBlock Text="{DynamicResource LowBatteryNotifyHint}" Style="{StaticResource TinyTextStyle}"
+                                               TextWrapping="Wrap" MaxWidth="420" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <CheckBox Grid.Column="1" Style="{StaticResource ToggleSwitchStyle}"
+                                          IsChecked="{Binding LowBatteryNotifications, Mode=TwoWay}"
+                                          VerticalAlignment="Center" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- 关于 -->
+                    <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,8">
+                        <StackPanel>
+                            <TextBlock Text="{DynamicResource About}" Style="{StaticResource SectionTitleStyle}" />
+
+                            <Grid Margin="0,0,0,10">
+                                <TextBlock Text="{DynamicResource Version}" FontSize="12"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding VersionText}" FontSize="12" HorizontalAlignment="Right" />
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource LogFile}" FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <TextBlock Text="{Binding LogPath}" Style="{StaticResource TinyTextStyle}"
+                                               TextTrimming="CharacterEllipsis" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}"
+                                        Content="{DynamicResource OpenLogFolder}"
+                                        Command="{Binding OpenLogCommand}"
+                                        VerticalAlignment="Center" Margin="12,0,0,0" />
+                            </Grid>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{DynamicResource DataFolder}" FontSize="12"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <TextBlock Text="{Binding DataPath}" Style="{StaticResource TinyTextStyle}"
+                                               TextTrimming="CharacterEllipsis" Margin="0,3,0,0" />
+                                </StackPanel>
+                                <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}"
+                                        Content="{DynamicResource OpenDataFolder}"
+                                        Command="{Binding OpenDataCommand}"
+                                        VerticalAlignment="Center" Margin="12,0,0,0" />
+                            </Grid>
+
+                            <TextBlock Text="{DynamicResource LogHint}" Style="{StaticResource TinyTextStyle}"
+                                       TextWrapping="Wrap" Margin="0,12,0,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 底部操作区 -->
+            <Border Grid.Row="1" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0"
+                    Background="{DynamicResource TitleBarBrush}">
+                <Grid Margin="20,0">
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerBrush}"
+                               FontSize="12" VerticalAlignment="Center"
+                               Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"
+                                Content="{DynamicResource Cancel}" Command="{Binding CancelCommand}" />
+                        <Button Style="{StaticResource PrimaryButtonStyle}"
+                                Content="{DynamicResource Save}" Command="{Binding SaveCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

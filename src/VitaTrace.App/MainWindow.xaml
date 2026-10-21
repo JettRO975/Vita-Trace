@@ -1,0 +1,442 @@
+<Window x:Class="VitaTrace.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:VitaTrace.App.Controls"
+        Title="{DynamicResource AppName}"
+        Icon="pack://application:,,,/Assets/VitaTrace.ico"
+        Width="1180" Height="760" MinWidth="1040" MinHeight="660"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResize"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="{DynamicResource AppFontFamily}"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <!-- 右侧标题下的类型/连接/状态小标签 -->
+        <Style x:Key="ChipBorder" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="8,3" />
+            <Setter Property="Margin" Value="0,0,6,0" />
+        </Style>
+        <Style x:Key="MetaLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Foreground" Value="{DynamicResource TextTertiaryBrush}" />
+        </Style>
+        <Style x:Key="MetaValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="Margin" Value="0,3,0,0" />
+        </Style>
+        <Style x:Key="DeviceNumberBadge" TargetType="Border">
+            <Setter Property="Width" Value="24" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+
+        <!-- ===== 品牌行：最小化/最大化/关闭交给 Windows 原生标题栏 ===== -->
+        <Grid Grid.Row="0" Margin="18,4,12,8">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="26" Height="26" CornerRadius="7" Background="{DynamicResource AccentBrush}">
+                    <TextBlock Text="V" Foreground="White" FontSize="14" FontWeight="Bold"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <TextBlock Text="{DynamicResource AppName}" Margin="10,0,0,0"
+                           FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
+                <TextBlock Text="{DynamicResource Tagline}" Margin="10,0,0,0"
+                           FontSize="11" Foreground="{DynamicResource TextTertiaryBrush}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+
+            <Button x:Name="SettingsButton" Click="Settings_Click"
+                    Style="{StaticResource IconButtonStyle}"
+                    HorizontalAlignment="Right"
+                    ToolTip="{DynamicResource Settings}"
+                    AutomationProperties.Name="{DynamicResource Settings}">
+                <Path Width="16" Height="16" Stretch="Uniform"
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                      StrokeThickness="1.4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      Data="M2,5 H14 M2,11 H14 M5.5,5 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0 M10.5,11 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0" />
+            </Button>
+        </Grid>
+
+        <!-- ===== 主内容 ===== -->
+        <Grid Grid.Row="1" Margin="16,14,16,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- 演示/低电量横幅：放在两栏上方，避免挤压右侧详情布局 -->
+            <StackPanel Grid.Row="0">
+                <Border Background="{DynamicResource BannerWarningBackgroundBrush}"
+                        BorderBrush="{DynamicResource BannerWarningBorderBrush}"
+                        BorderThickness="1" CornerRadius="10" Padding="12,8" Margin="0,0,0,10"
+                        Visibility="{Binding HasLowBattery, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE7BA;" FontFamily="{DynamicResource IconFontFamily}" FontSize="14"
+                                   Foreground="{DynamicResource WarningBrush}" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding LowBatteryText}" FontSize="12" Margin="8,0,0,0"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{DynamicResource BannerInfoBackgroundBrush}"
+                        BorderBrush="{DynamicResource BannerInfoBorderBrush}"
+                        BorderThickness="1" CornerRadius="10" Padding="12,8" Margin="0,0,0,10"
+                        Visibility="{Binding IsDemo, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{DynamicResource AccentBrush}" CornerRadius="4"
+                                Padding="6,2" VerticalAlignment="Center">
+                            <TextBlock Text="{DynamicResource DemoBadge}" Foreground="White"
+                                       FontSize="10" FontWeight="SemiBold" />
+                        </Border>
+                        <TextBlock Text="{DynamicResource DemoTitle}" FontSize="12" FontWeight="SemiBold"
+                                   Margin="8,0,0,0" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource DemoHint}" FontSize="11"
+                                   Foreground="{DynamicResource TextSecondaryBrush}"
+                                   Margin="10,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <Grid Grid.Row="1" Margin="0,12,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="330" />
+                    <ColumnDefinition Width="14" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- 左：设备列表 -->
+                <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}">
+                    <Grid Margin="14,14,14,12">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Devices}" FontSize="15" FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding DeviceCountText}" Style="{StaticResource TinyTextStyle}" Margin="0,3,0,0" />
+                            </StackPanel>
+                            <Button HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    Width="30" Height="30" Padding="0"
+                                    Style="{StaticResource IconButtonStyle}"
+                                    Command="{Binding RefreshCommand}"
+                                    ToolTip="{DynamicResource RefreshTooltip}">
+                                <Path Width="15" Height="15" Stretch="Uniform"
+                                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                      Data="M17.65,6.35 C16.2,4.9 14.21,4 12,4 C7.58,4 4,7.58 4,12 C4,16.42 7.58,20 12,20 C15.73,20 18.84,17.45 19.73,14 L17.65,14 C16.83,16.33 14.61,18 12,18 C8.69,18 6,15.31 6,12 C6,8.69 8.69,6 12,6 C13.66,6 15.14,6.69 16.22,7.78 L13,11 L20,11 L20,4 Z" />
+                            </Button>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,10,0,0">
+                            <ListBox ItemsSource="{Binding Devices}"
+                                     SelectedItem="{Binding SelectedDevice, Mode=TwoWay}"
+                                     ItemContainerStyle="{StaticResource DeviceListItemStyle}"
+                                     Background="Transparent" BorderThickness="0"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border Style="{StaticResource DeviceNumberBadge}">
+                                                    <TextBlock Text="{Binding NumberText}" FontSize="11"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource AccentBrush}"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <StackPanel Grid.Column="1" Margin="9,0,0,0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                    <TextBlock Text="{Binding Subtitle}" FontSize="11"
+                                                               Foreground="{DynamicResource TextTertiaryBrush}"
+                                                               Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0"
+                                                        HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding BatteryText}" FontSize="12"
+                                                           FontWeight="SemiBold" HorizontalAlignment="Right"
+                                                           Foreground="{Binding RingBrush}" />
+                                                <TextBlock Text="{Binding StatusText}" FontSize="10"
+                                                           Foreground="{DynamicResource TextTertiaryBrush}"
+                                                           HorizontalAlignment="Right" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <!-- 无设备状态：叠在列表区域中央，不伪造任何设备卡 -->
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="18"
+                                        Visibility="{Binding HasDevices, Converter={StaticResource InverseBoolToVis}}">
+                                <Path Width="34" Height="34" Stretch="Uniform" HorizontalAlignment="Center"
+                                      Stroke="{DynamicResource TextTertiaryBrush}" StrokeThickness="1.1"
+                                      StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                      Data="M3,3 H21 V17 H3 Z M8,21 H16 M12,17 V21" />
+                                <TextBlock Text="{DynamicResource NoDevices}" FontSize="13" FontWeight="SemiBold"
+                                           HorizontalAlignment="Center" Margin="0,10,0,0" />
+                                <TextBlock Text="{DynamicResource NoDevicesHint}" Style="{StaticResource TinyTextStyle}"
+                                           TextWrapping="Wrap" TextAlignment="Center" Margin="0,6,0,0" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Grid.Row="2" Background="{DynamicResource SurfaceAltBrush}"
+                                CornerRadius="8" Padding="10,7" Margin="0,10,0,0">
+                            <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource TinyTextStyle}"
+                                       TextTrimming="CharacterEllipsis" />
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- 右：选中设备详情 -->
+                <Grid Grid.Column="2">
+                    <!-- 隐藏竖向滚动条，但保留鼠标滚轮/触摸滚动；避免右侧出现一条常驻竖条。 -->
+                    <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"
+                                  FocusVisualStyle="{x:Null}">
+                        <Grid Visibility="{Binding HasSelection, Converter={StaticResource BoolToVis}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- 设备标题；铅笔进入内联重命名，Enter 保存、Esc 取消 -->
+                            <Grid Grid.Row="0" Margin="4,2,4,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <Grid>
+                                        <TextBlock Text="{Binding SelectedDevice.Name}" FontSize="24" FontWeight="SemiBold"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Visibility="{Binding IsRenaming, Converter={StaticResource InverseBoolToVis}}" />
+                                        <TextBox x:Name="RenameTextBox"
+                                                 Text="{Binding EditingName, UpdateSourceTrigger=PropertyChanged}"
+                                                 Style="{StaticResource AppTextBoxStyle}"
+                                                 FontSize="20" Height="34" Padding="8,3"
+                                                 Visibility="{Binding IsRenaming, Converter={StaticResource BoolToVis}}"
+                                                 KeyDown="RenameTextBox_KeyDown"
+                                                 ToolTip="{DynamicResource RenameHint}" />
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                    <Border Style="{StaticResource ChipBorder}">
+                                        <TextBlock Text="{Binding SelectedDevice.KindText}" FontSize="11"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </Border>
+                                    <Border Style="{StaticResource ChipBorder}">
+                                        <TextBlock Text="{Binding SelectedDevice.ConnectionText}" FontSize="11"
+                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </Border>
+                                    <Border Style="{StaticResource ChipBorder}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ellipse Width="7" Height="7" Fill="{Binding SelectedDevice.StatusBrush}"
+                                                     Margin="0,0,6,0" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding SelectedDevice.StatusText}" FontSize="11"
+                                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </StackPanel>
+                                    </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Button Grid.Column="1" x:Name="RenameButton" Width="30" Height="30"
+                                        Margin="8,0,0,0" VerticalAlignment="Top" Padding="0"
+                                        Style="{StaticResource IconButtonStyle}"
+                                        Click="Rename_Click"
+                                        ToolTip="{DynamicResource RenameDevice}"
+                                        AutomationProperties.Name="{DynamicResource RenameDevice}">
+                                    <Path Width="15" Height="15" Stretch="Uniform"
+                                          Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                                          StrokeThickness="1.5" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                          StrokeLineJoin="Round"
+                                          Data="M4,20 L5,15 L16,4 L20,8 L9,19 Z M14,6 L18,10" />
+                                </Button>
+                            </Grid>
+
+                            <!-- 电量圆环 + 历史曲线 -->
+                            <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}">
+                                <Grid Margin="22">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <controls:BatteryRing Width="230" Height="230"
+                                                          Percent="{Binding SelectedDevice.PercentValue}"
+                                                          Text="{Binding SelectedDevice.RingText}"
+                                                          Caption="{Binding SelectedDevice.RingCaption}"
+                                                          ProgressBrush="{Binding SelectedDevice.RingBrush}"
+                                                          TrackBrush="{DynamicResource RingTrackBrush}"
+                                                          TextBrush="{DynamicResource TextPrimaryBrush}"
+                                                          CaptionBrush="{DynamicResource TextTertiaryBrush}"
+                                                          Thickness="16"
+                                                          VerticalAlignment="Center" />
+
+                                    <Grid Grid.Column="1" Margin="26,0,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <Grid>
+                                            <TextBlock Text="{DynamicResource History}" FontSize="13"
+                                                       FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                            <TextBlock Text="{Binding SelectedDevice.HistoryRangeText}"
+                                                       Style="{StaticResource TinyTextStyle}"
+                                                       HorizontalAlignment="Right" VerticalAlignment="Center" />
+                                        </Grid>
+
+                                        <Grid Grid.Row="1" Margin="0,10,0,0" MinHeight="170">
+                                            <controls:Sparkline Points="{Binding SelectedDevice.History}"
+                                                                Stroke="{Binding SelectedDevice.RingBrush}"
+                                                                GridBrush="{DynamicResource BorderBrush}"
+                                                                TextBrush="{DynamicResource TextTertiaryBrush}"
+                                                                Height="170" />
+                                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                        Visibility="{Binding SelectedDevice.HasHistory, Converter={StaticResource InverseBoolToVis}}">
+                                                <TextBlock Text="{DynamicResource NoHistory}" FontSize="12"
+                                                           Foreground="{DynamicResource TextSecondaryBrush}"
+                                                           HorizontalAlignment="Center" />
+                                                <TextBlock Text="{DynamicResource HistoryHint}" Style="{StaticResource TinyTextStyle}"
+                                                           TextWrapping="Wrap" TextAlignment="Center" MaxWidth="300" Margin="0,6,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <Grid Grid.Row="2" Margin="0,14,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,12,10">
+                                                <TextBlock Text="{DynamicResource Source}" Style="{StaticResource MetaLabel}" />
+                                                <TextBlock Text="{Binding SelectedDevice.SourceText}" Style="{StaticResource MetaValue}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,10">
+                                                <TextBlock Text="{DynamicResource Confidence}" Style="{StaticResource MetaLabel}" />
+                                                <TextBlock Text="{Binding SelectedDevice.ConfidenceText}" Style="{StaticResource MetaValue}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,12,0">
+                                                <TextBlock Text="{Binding SelectedDevice.UpdatedText}" Style="{StaticResource MetaLabel}" />
+                                                <TextBlock Text="{Binding SelectedDevice.Subtitle}" Style="{StaticResource MetaValue}" />
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Grid.Column="1">
+                                                <TextBlock Text="{DynamicResource Receiver}" Style="{StaticResource MetaLabel}" />
+                                                <TextBlock Text="{Binding SelectedDevice.ReceiverText}" Style="{StaticResource MetaValue}" />
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <TextBlock Grid.Row="3" Text="{Binding SelectedDevice.HintText}"
+                                                   Style="{StaticResource TinyTextStyle}" TextWrapping="Wrap"
+                                                   Margin="0,12,0,0" />
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <!-- 设备详情 -->
+                            <Border Grid.Row="2" Style="{StaticResource CardBorderStyle}" Margin="0,14,0,0">
+                                <StackPanel Margin="20,18">
+                                    <TextBlock Text="{DynamicResource Detail}" Style="{StaticResource SectionTitleStyle}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,16,12">
+                                            <TextBlock Text="{DynamicResource Model}" Style="{StaticResource MetaLabel}" />
+                                            <TextBlock Text="{Binding SelectedDevice.ModelText}" Style="{StaticResource MetaValue}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,0,12">
+                                            <TextBlock Text="{DynamicResource Vendor}" Style="{StaticResource MetaLabel}" />
+                                            <TextBlock Text="{Binding SelectedDevice.VendorText}" Style="{StaticResource MetaValue}" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,16,12">
+                                            <TextBlock Text="{DynamicResource VidPid}" Style="{StaticResource MetaLabel}" />
+                                            <TextBlock Text="{Binding SelectedDevice.VidPidText}" Style="{StaticResource MetaValue}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,0,0,12">
+                                            <TextBlock Text="{DynamicResource Connection}" Style="{StaticResource MetaLabel}" />
+                                            <TextBlock Text="{Binding SelectedDevice.ConnectionText}" Style="{StaticResource MetaValue}" />
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,16,12">
+                                            <TextBlock Text="{DynamicResource Receiver}" Style="{StaticResource MetaLabel}" />
+                                            <TextBlock Text="{Binding SelectedDevice.ReceiverText}" Style="{StaticResource MetaValue}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Grid.Column="1" Margin="0,0,0,12">
+                                            <TextBlock Text="{DynamicResource Status}" Style="{StaticResource MetaLabel}" />
+                                            <TextBlock Text="{Binding SelectedDevice.StatusText}" Style="{StaticResource MetaValue}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <!-- 有设备但未选中 / 无设备 -->
+                    <Grid Visibility="{Binding HasSelection, Converter={StaticResource InverseBoolToVis}}">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="24">
+                            <Path Width="40" Height="40" Stretch="Uniform" HorizontalAlignment="Center"
+                                  Stroke="{DynamicResource TextTertiaryBrush}" StrokeThickness="1.2"
+                                  StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  Data="M3,3 H21 V17 H3 Z M8,21 H16 M12,17 V21" />
+                            <TextBlock Text="{Binding EmptyTitle}" FontSize="15" FontWeight="SemiBold"
+                                       HorizontalAlignment="Center" Margin="0,12,0,0" />
+                            <TextBlock Text="{Binding EmptyHint}" Style="{StaticResource SubtleTextStyle}"
+                                       TextWrapping="Wrap" TextAlignment="Center" MaxWidth="420" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- ===== 底部状态栏 ===== -->
+        <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
+            <Grid Margin="18,0">
+                <TextBlock Text="{Binding LastUpdatedText}" Style="{StaticResource TinyTextStyle}"
+                           VerticalAlignment="Center" />
+                <TextBlock Text="{DynamicResource FooterPhase}" Style="{StaticResource TinyTextStyle}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

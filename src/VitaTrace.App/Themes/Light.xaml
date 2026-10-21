@@ -1,0 +1,26 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 浅色主题：偏冷的灰白，避免纯白刺眼；强调色用于选中与主按钮。 -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#F5F6F9" />
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="#F0F2F6" />
+    <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="CardHoverBrush" Color="#EEF3FD" />
+    <SolidColorBrush x:Key="BorderBrush" Color="#E2E6EE" />
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1A1D24" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#596174" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#8A92A6" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#2F6BFF" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#1F58E6" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#E7EEFF" />
+    <SolidColorBrush x:Key="SuccessBrush" Color="#12996B" />
+    <SolidColorBrush x:Key="WarningBrush" Color="#B87400" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#DC3D43" />
+    <SolidColorBrush x:Key="RingTrackBrush" Color="#EBEEF4" />
+    <SolidColorBrush x:Key="BannerWarningBackgroundBrush" Color="#FFF6E5" />
+    <SolidColorBrush x:Key="BannerWarningBorderBrush" Color="#F2D9A8" />
+    <SolidColorBrush x:Key="BannerInfoBackgroundBrush" Color="#EAF1FF" />
+    <SolidColorBrush x:Key="BannerInfoBorderBrush" Color="#C9DBFF" />
+    <Color x:Key="WindowShadowColor">#24000000</Color>
+</ResourceDictionary>

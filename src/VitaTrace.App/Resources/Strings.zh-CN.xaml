@@ -1,0 +1,161 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <sys:String x:Key="AppName">Vita Trace</sys:String>
+    <sys:String x:Key="Tagline">无线外设电量，一眼看清</sys:String>
+
+    <sys:String x:Key="Devices">设备</sys:String>
+    <sys:String x:Key="DeviceCount">共 {0} 个设备</sys:String>
+    <sys:String x:Key="DemoBadge">演示数据</sys:String>
+    <sys:String x:Key="DemoTitle">当前为界面演示模式</sys:String>
+    <sys:String x:Key="DemoHint">这些是示例设备与示例电量，不是真实读数。真实模式已接入设备枚举，电量读取在第四阶段。</sys:String>
+    <sys:String x:Key="Settings">设置</sys:String>
+    <sys:String x:Key="Refresh">刷新</sys:String>
+    <sys:String x:Key="Refreshing">正在刷新…</sys:String>
+    <sys:String x:Key="LastUpdated">更新于 {0}</sys:String>
+    <sys:String x:Key="Source">数据来源</sys:String>
+    <sys:String x:Key="Confidence">可信度</sys:String>
+    <sys:String x:Key="Battery">电量</sys:String>
+    <sys:String x:Key="History">电量历史</sys:String>
+    <sys:String x:Key="NoHistory">还没有历史记录</sys:String>
+    <sys:String x:Key="HistoryHint">每次刷新后会在这里留下一个采样点；读取失败时曲线会断开。</sys:String>
+    <sys:String x:Key="SelectDevice">选择一个设备查看详情</sys:String>
+    <sys:String x:Key="NoDevices">还没有检测到设备</sys:String>
+    <sys:String x:Key="NoDevicesHint">插入 2.4G 接收器，或连接蓝牙外设后，这里会自动出现。</sys:String>
+    <sys:String x:Key="EmptySelectionHint">左侧列表里选一个设备，右侧会显示电量圆环、历史曲线和详细信息。</sys:String>
+
+    <sys:String x:Key="Detail">设备详情</sys:String>
+    <sys:String x:Key="RenameDevice">重命名设备</sys:String>
+    <sys:String x:Key="RenameHint">输入自定义名称；留空恢复系统名称</sys:String>
+    <sys:String x:Key="Status">状态</sys:String>
+    <sys:String x:Key="Connection">连接方式</sys:String>
+    <sys:String x:Key="Model">型号</sys:String>
+    <sys:String x:Key="Vendor">厂商</sys:String>
+    <sys:String x:Key="VidPid">VID / PID</sys:String>
+    <sys:String x:Key="Path">设备路径</sys:String>
+    <sys:String x:Key="Receiver">接收器</sys:String>
+    <sys:String x:Key="Alias">自定义名称</sys:String>
+    <sys:String x:Key="AliasHint">仅改变显示名称，不影响设备识别。</sys:String>
+    <sys:String x:Key="Notes">备注</sys:String>
+    <sys:String x:Key="Save">保存</sys:String>
+    <sys:String x:Key="Cancel">取消</sys:String>
+    <sys:String x:Key="Close">关闭</sys:String>
+
+    <sys:String x:Key="LowBattery">低电量</sys:String>
+    <sys:String x:Key="LowBatteryBanner">低电量提醒</sys:String>
+    <sys:String x:Key="LowBatteryMessage">{0} 电量仅剩 {1}%，请更换电池或充电。</sys:String>
+
+    <sys:String x:Key="SettingsTitle">设置</sys:String>
+    <sys:String x:Key="Appearance">外观</sys:String>
+    <sys:String x:Key="Theme">主题</sys:String>
+    <sys:String x:Key="ThemeSystem">跟随系统</sys:String>
+    <sys:String x:Key="ThemeLight">浅色</sys:String>
+    <sys:String x:Key="ThemeDark">深色</sys:String>
+    <sys:String x:Key="Language">语言</sys:String>
+    <sys:String x:Key="LanguageSystem">跟随系统</sys:String>
+    <sys:String x:Key="LanguageZh">简体中文</sys:String>
+    <sys:String x:Key="LanguageEn">English</sys:String>
+
+    <sys:String x:Key="Monitoring">监控</sys:String>
+    <sys:String x:Key="RefreshInterval">刷新间隔</sys:String>
+    <sys:String x:Key="Seconds">秒</sys:String>
+    <sys:String x:Key="LowThreshold">低电量阈值</sys:String>
+    <sys:String x:Key="Percent">百分比</sys:String>
+    <sys:String x:Key="HistoryRetention">历史保留</sys:String>
+    <sys:String x:Key="Days">天</sys:String>
+    <sys:String x:Key="MonitoringHint">刷新间隔越短，读取越及时，但会增加 HID / 蓝牙压力；建议 60 秒。</sys:String>
+
+    <sys:String x:Key="Behavior">行为</sys:String>
+    <sys:String x:Key="StartWithWindows">开机启动</sys:String>
+    <sys:String x:Key="StartWithWindowsHint">只写入当前用户的启动项，不需要管理员权限。</sys:String>
+    <sys:String x:Key="MinimizeToTray">关闭窗口时最小化到托盘</sys:String>
+    <sys:String x:Key="MinimizeToTrayHint">软件继续在后台读取电量，双击托盘图标可重新打开。</sys:String>
+    <sys:String x:Key="LowBatteryNotify">低电量提醒</sys:String>
+    <sys:String x:Key="LowBatteryNotifyHint">低于阈值时显示托盘气泡，并让托盘电量图标变红。</sys:String>
+
+    <sys:String x:Key="About">关于</sys:String>
+    <sys:String x:Key="Version">版本</sys:String>
+    <sys:String x:Key="LogFile">日志文件</sys:String>
+    <sys:String x:Key="OpenLogFolder">打开日志目录</sys:String>
+    <sys:String x:Key="DataFolder">数据目录</sys:String>
+    <sys:String x:Key="OpenDataFolder">打开数据目录</sys:String>
+    <sys:String x:Key="OpenFolder">打开目录</sys:String>
+    <sys:String x:Key="LogHint">设备兼容性问题请附上日志；日志不包含个人数据。</sys:String>
+
+    <sys:String x:Key="SaveFailed">保存失败：{0}</sys:String>
+    <sys:String x:Key="LoadFailed">读取设置失败，已使用默认值：{0}</sys:String>
+    <sys:String x:Key="SettingsSaved">设置已保存</sys:String>
+    <sys:String x:Key="ValidationRefresh">刷新间隔需在 15–3600 秒之间。</sys:String>
+    <sys:String x:Key="ValidationThreshold">低电量阈值需在 5–50% 之间。</sys:String>
+    <sys:String x:Key="ValidationHistory">历史保留需在 7–365 天之间。</sys:String>
+    <sys:String x:Key="AlreadyRunning">Vita Trace 已在运行，请从系统托盘打开已有窗口。</sys:String>
+    <sys:String x:Key="FatalError">发生未处理的错误，详情已写入日志：\n{0}</sys:String>
+
+    <sys:String x:Key="Reading">读取中…</sys:String>
+    <sys:String x:Key="UnsupportedHint">该设备没有公开的电量读取通道，软件不会编造百分比。</sys:String>
+    <sys:String x:Key="ReadFailedHint">本次读取失败，稍后会自动重试；可查看日志了解原因。</sys:String>
+    <sys:String x:Key="UnknownHint">暂时无法获取电量。</sys:String>
+    <sys:String x:Key="StaleHint">读数已超过新鲜度阈值，可能不是当前电量。</sys:String>
+    <sys:String x:Key="DisconnectedHint">设备当前未连接，显示的是最后一次已知读数。</sys:String>
+    <sys:String x:Key="ReceiverOfflineHint">接收器未连接，无法读取该设备的电量。</sys:String>
+    <sys:String x:Key="WiredHint">有线设备由 USB 供电，不需要监控电池。</sys:String>
+
+    <sys:String x:Key="TrayOpen">打开 Vita Trace</sys:String>
+    <sys:String x:Key="TrayRefresh">立即刷新</sys:String>
+    <sys:String x:Key="TrayExit">退出</sys:String>
+    <sys:String x:Key="TrayLowBattery">Vita Trace · 低电量</sys:String>
+    <sys:String x:Key="TrayLowBatteryBody">{0} 电量仅剩 {1}%，请及时更换电池或充电。</sys:String>
+    <sys:String x:Key="TrayMinimized">Vita Trace 仍在后台运行</sys:String>
+    <sys:String x:Key="TrayMinimizedBody">图标可能在任务栏右下角的 ^ 溢出区；单击或双击即可重新打开。</sys:String>
+
+    <sys:String x:Key="SourcePnp">Windows PnP</sys:String>
+    <sys:String x:Key="SourceBleGatt">BLE GATT</sys:String>
+    <sys:String x:Key="SourceHidpp">罗技 HID++</sys:String>
+    <sys:String x:Key="SourceCompxHid">CompX 厂商协议</sys:String>
+    <sys:String x:Key="SourceMchoseHid">迈从键盘状态帧 0x13/0x4A</sys:String>
+    <sys:String x:Key="SourceRapooHid">雷柏 2.4G 状态帧</sys:String>
+    <sys:String x:Key="SourceStandardHid">标准 HID</sys:String>
+    <sys:String x:Key="SourceManual">手动</sys:String>
+    <sys:String x:Key="SourceNone">—</sys:String>
+
+    <sys:String x:Key="ConfidenceHigh">高</sys:String>
+    <sys:String x:Key="ConfidenceMedium">中</sys:String>
+    <sys:String x:Key="ConfidenceLow">低</sys:String>
+    <sys:String x:Key="ConfidenceUnknown">未知</sys:String>
+
+    <sys:String x:Key="StatusOk">正常</sys:String>
+    <sys:String x:Key="StatusStale">数据过期</sys:String>
+    <sys:String x:Key="StatusReadFailed">读取失败</sys:String>
+    <sys:String x:Key="StatusUnsupported">不支持读取</sys:String>
+    <sys:String x:Key="StatusDisconnected">设备已断开</sys:String>
+    <sys:String x:Key="StatusReceiverOffline">接收器断开</sys:String>
+    <sys:String x:Key="StatusWired">有线供电</sys:String>
+    <sys:String x:Key="StatusUnknown">未知</sys:String>
+
+    <sys:String x:Key="KindKeyboard">键盘</sys:String>
+    <sys:String x:Key="KindMouse">鼠标</sys:String>
+    <sys:String x:Key="KindHeadset">耳机</sys:String>
+    <sys:String x:Key="KindGamepad">手柄</sys:String>
+    <sys:String x:Key="KindReceiver">接收器</sys:String>
+    <sys:String x:Key="KindOther">其他外设</sys:String>
+    <sys:String x:Key="KindUnknown">未知设备</sys:String>
+
+    <sys:String x:Key="ConnectionUsbReceiver">2.4G 接收器</sys:String>
+    <sys:String x:Key="ConnectionBluetooth">蓝牙</sys:String>
+    <sys:String x:Key="ConnectionWired">有线</sys:String>
+    <sys:String x:Key="ConnectionUnknown">未知连接</sys:String>
+
+    <sys:String x:Key="ChartRange">最近 {0} 次</sys:String>
+    <sys:String x:Key="Minimize">最小化</sys:String>
+    <sys:String x:Key="Maximize">最大化</sys:String>
+    <sys:String x:Key="Restore">还原</sys:String>
+    <sys:String x:Key="CloseWindow">关闭</sys:String>
+    <sys:String x:Key="RefreshTooltip">立即刷新（F5）</sys:String>
+    <sys:String x:Key="AppVersion">版本 0.7.0 · Phase 7 测试与打包</sys:String>
+    <sys:String x:Key="FooterPhase">数据不会上传；电量与历史保存在本机，异常写入日志。</sys:String>
+    <sys:String x:Key="ReceiverConnected">接收器已连接</sys:String>
+    <sys:String x:Key="PairedDeviceUnknown">配对外设未知</sys:String>
+    <sys:String x:Key="ReceiverNoBattery">USB 总线供电；接收器本身没有电池，已配对的键鼠型号需要厂商协议才能识别。</sys:String>
+    <sys:String x:Key="NotAvailable">—</sys:String>
+</ResourceDictionary>
