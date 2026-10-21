@@ -28,6 +28,7 @@ New-Item -ItemType Directory -Path $stage -Force | Out-Null
 
 Copy-Item -LiteralPath $exe -Destination $stage
 Copy-Item -LiteralPath (Join-Path $root 'README.md') -Destination $stage
+Copy-Item -LiteralPath (Join-Path $root 'assets') -Destination $stage -Recurse
 Copy-Item -LiteralPath (Join-Path $root 'packaging\install.ps1') -Destination $stage
 Copy-Item -LiteralPath (Join-Path $root 'packaging\uninstall.ps1') -Destination $stage
 
