@@ -4,7 +4,7 @@
 
 Vita Trace 是一个 Windows 桌面小工具，把无线外设的电量、连接状态和历史变化放在一个窗口里。它不会安装驱动，不需要管理员权限，也不会把设备信息上传到网络。
 
-![Vita Trace 主界面](docs/images/main-real.png)
+![Vita Trace 主界面](assets/main-real.png)
 
 当前版本：**0.7.0**（早期版本）
 
