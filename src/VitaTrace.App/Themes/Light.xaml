@@ -23,4 +23,9 @@
     <SolidColorBrush x:Key="BannerInfoBackgroundBrush" Color="#EAF1FF" />
     <SolidColorBrush x:Key="BannerInfoBorderBrush" Color="#C9DBFF" />
     <Color x:Key="WindowShadowColor">#24000000</Color>
+    <LinearGradientBrush x:Key="TitleBarGradientBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#2F6BFF" Offset="0" />
+        <GradientStop Color="#35B3C9" Offset="0.58" />
+        <GradientStop Color="#9AD4CB" Offset="1" />
+    </LinearGradientBrush>
 </ResourceDictionary>

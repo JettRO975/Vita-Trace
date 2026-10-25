@@ -3,8 +3,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <!-- 仅为了使用 WinForms 的 NotifyIcon（系统托盘）；不引入 WinForms 界面。 -->
-    <UseWindowsForms>true</UseWindowsForms>
+    <!-- 托盘已改用原生 Shell_NotifyIcon，不再需要 WinForms 运行时。 -->
+    <UseSystemDrawing>true</UseSystemDrawing>
     <!-- 关闭 SDK 隐式 using：WinForms 与 WPF 有大量同名类型（Application/Brush/Color），
          统一在 GlobalUsings.cs 里显式声明，避免歧义。 -->
     <ImplicitUsings>disable</ImplicitUsings>
@@ -16,6 +16,10 @@
     <!-- WFO0003：WinForms 分析器要求把 DPI 配置移到代码里。本项目是 WPF 应用，
          只是借用 NotifyIcon；PerMonitorV2 仍应由 app.manifest 声明，保留并抑制该警告。 -->
     <NoWarn>$(NoWarn);WFO0003</NoWarn>
+    <!-- 桌面小工具不需要后台并发 GC；关闭并发 GC 可减少一个 GC 线程和后台堆，
+         对常驻内存更友好。 -->
+    <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+    <ServerGarbageCollection>false</ServerGarbageCollection>
   </PropertyGroup>
   <ItemGroup>
     <!-- 同时作为窗口图标（pack URI）与 exe 图标（ApplicationIcon）。 -->

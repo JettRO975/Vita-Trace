@@ -9,8 +9,8 @@ public sealed class AppSettings
     /// <summary>system / zh-CN / en-US。</summary>
     public string Language { get; set; } = "system";
 
-    /// <summary>system / light / dark。</summary>
-    public string Theme { get; set; } = "system";
+    /// <summary>system / light / dark / sea / dusk。默认海蓝。</summary>
+    public string Theme { get; set; } = "sea";
 
     /// <summary>刷新间隔（秒）。默认 60；过小会增加 HID/BLE 压力，下限 15。</summary>
     public int RefreshSeconds { get; set; } = 60;
@@ -56,7 +56,7 @@ public sealed class AppSettings
     public void Normalize()
     {
         Language = NormalizeChoice(Language, "system", "zh-CN", "en-US");
-        Theme = NormalizeChoice(Theme, "system", "light", "dark");
+        Theme = NormalizeChoice(Theme, "sea", "dusk", "system", "light", "dark");
         RefreshSeconds = Math.Clamp(RefreshSeconds, 15, 3600);
         LowBatteryThreshold = Math.Clamp(LowBatteryThreshold, 5, 50);
         HistoryRetentionDays = Math.Clamp(HistoryRetentionDays, 7, 365);

@@ -52,6 +52,8 @@
     <sys:String x:Key="ThemeSystem">System</sys:String>
     <sys:String x:Key="ThemeLight">Light</sys:String>
     <sys:String x:Key="ThemeDark">Dark</sys:String>
+    <sys:String x:Key="ThemeSea">Sea blue</sys:String>
+    <sys:String x:Key="ThemeDusk">Dusk purple</sys:String>
     <sys:String x:Key="Language">Language</sys:String>
     <sys:String x:Key="LanguageSystem">System</sys:String>
     <sys:String x:Key="LanguageZh">简体中文</sys:String>

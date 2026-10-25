@@ -1,0 +1,45 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 海蓝配色：默认外观。大面积背景由 #598BFD → #9AD4CB → #35B3C9 融合而成，
+         卡片保持高透明度白色，边框/分隔线使用同一组颜色，避免只变成“蓝色按钮”主题。 -->
+    <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#A9C4FF" Offset="0" />
+        <GradientStop Color="#BDE9DF" Offset="0.55" />
+        <GradientStop Color="#8FDDEA" Offset="1" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="TitleBarBrush" Color="#F7FFFFFF" />
+    <SolidColorBrush x:Key="SurfaceBrush" Color="#F7FBFF" />
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="#DDEEFF" />
+    <LinearGradientBrush x:Key="CardBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#DCEBFF" Offset="0" />
+        <GradientStop Color="#CFF3E9" Offset="1" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="CardHoverBrush" Color="#E6F2FF" />
+    <LinearGradientBrush x:Key="BorderBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#8AB0FF" Offset="0" />
+        <GradientStop Color="#8FD4C9" Offset="0.55" />
+        <GradientStop Color="#62C6D9" Offset="1" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="TextPrimaryBrush" Color="#10233F" />
+    <SolidColorBrush x:Key="TextSecondaryBrush" Color="#3E5873" />
+    <SolidColorBrush x:Key="TextTertiaryBrush" Color="#6F849B" />
+    <SolidColorBrush x:Key="AccentBrush" Color="#598BFD" />
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#3E72F0" />
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#DCE9FF" />
+    <SolidColorBrush x:Key="AccentSecondaryBrush" Color="#9AD4CB" />
+    <SolidColorBrush x:Key="AccentTertiaryBrush" Color="#35B3C9" />
+    <SolidColorBrush x:Key="SuccessBrush" Color="#0E8F62" />
+    <SolidColorBrush x:Key="WarningBrush" Color="#9C6100" />
+    <SolidColorBrush x:Key="DangerBrush" Color="#D33138" />
+    <SolidColorBrush x:Key="RingTrackBrush" Color="#C9E7F2" />
+    <SolidColorBrush x:Key="BannerWarningBackgroundBrush" Color="#FFF4D9" />
+    <SolidColorBrush x:Key="BannerWarningBorderBrush" Color="#E9C77C" />
+    <SolidColorBrush x:Key="BannerInfoBackgroundBrush" Color="#DCEEFF" />
+    <SolidColorBrush x:Key="BannerInfoBorderBrush" Color="#8FB6FF" />
+    <Color x:Key="WindowShadowColor">#33000000</Color>
+    <LinearGradientBrush x:Key="TitleBarGradientBrush" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="#4E7DF0" Offset="0" />
+        <GradientStop Color="#35B3C9" Offset="0.58" />
+        <GradientStop Color="#9AD4CB" Offset="1" />
+    </LinearGradientBrush>
+</ResourceDictionary>

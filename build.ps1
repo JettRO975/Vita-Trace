@@ -36,6 +36,8 @@ if ($Publish) {
     $project = [System.IO.Path]::Combine($root, 'src\VitaTrace.App\VitaTrace.App.csproj')
     Write-Host "publish : $output"
 
+    # 不压缩单文件：压缩会在启动时把程序集解压到内存，实测常驻内存
+    # 比未压缩版本高约 100 MB；用体积换内存，桌面工具更合适。
     & $dotnet publish $project `
         -c $Configuration `
         -r win-x64 `
@@ -45,7 +47,7 @@ if ($Publish) {
         -p:UseSharedCompilation=false `
         -p:PublishSingleFile=true `
         -p:IncludeNativeLibrariesForSelfExtract=true `
-        -p:EnableCompressionInSingleFile=true
+        -p:EnableCompressionInSingleFile=false
 
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE

@@ -52,6 +52,8 @@
     <sys:String x:Key="ThemeSystem">跟随系统</sys:String>
     <sys:String x:Key="ThemeLight">浅色</sys:String>
     <sys:String x:Key="ThemeDark">深色</sys:String>
+    <sys:String x:Key="ThemeSea">海蓝</sys:String>
+    <sys:String x:Key="ThemeDusk">暮紫</sys:String>
     <sys:String x:Key="Language">语言</sys:String>
     <sys:String x:Key="LanguageSystem">跟随系统</sys:String>
     <sys:String x:Key="LanguageZh">简体中文</sys:String>

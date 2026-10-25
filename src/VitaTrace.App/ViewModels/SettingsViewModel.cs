@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Windows.Media;
 using VitaTrace.App.Mvvm;
 using VitaTrace.App.Services;
 using VitaTrace.Core.Abstractions;
@@ -9,6 +10,12 @@ namespace VitaTrace.App.ViewModels;
 
 /// <summary>设置页里的一个选项（主题/语言胶囊）。</summary>
 public sealed record OptionItem(string Value, string Label);
+
+/// <summary>
+/// 外观选项：除了名称，还带三枚预览色点。
+/// 颜色用 Brush 而不是字符串，避免绑定到 Fill 时依赖运行时类型转换。
+/// </summary>
+public sealed record AppearanceOption(string Value, string Label, Brush Color1, Brush Color2, Brush Color3);
 
 /// <summary>
 /// 设置窗口的状态。保存时把草稿整体交给 App.ApplySettings，
@@ -50,9 +57,11 @@ public sealed class SettingsViewModel : ObservableObject
 
         ThemeOptions = new[]
         {
-            new OptionItem("system", _l10n["ThemeSystem"]),
-            new OptionItem("light", _l10n["ThemeLight"]),
-            new OptionItem("dark", _l10n["ThemeDark"])
+            new AppearanceOption("sea", _l10n["ThemeSea"], Brush("#598BFD"), Brush("#9AD4CB"), Brush("#35B3C9")),
+            new AppearanceOption("dusk", _l10n["ThemeDusk"], Brush("#945FFA"), Brush("#F698B8"), Brush("#F7DFD9")),
+            new AppearanceOption("system", _l10n["ThemeSystem"], Brush("#D7DEEA"), Brush("#AEB8C8"), Brush("#8A96AD")),
+            new AppearanceOption("light", _l10n["ThemeLight"], Brush("#FFFFFF"), Brush("#2F6BFF"), Brush("#E2E6EE")),
+            new AppearanceOption("dark", _l10n["ThemeDark"], Brush("#1E1F24"), Brush("#7C9CFF"), Brush("#50545E"))
         };
 
         LanguageOptions = new[]
@@ -70,7 +79,10 @@ public sealed class SettingsViewModel : ObservableObject
 
     public event EventHandler? CloseRequested;
 
-    public IReadOnlyList<OptionItem> ThemeOptions { get; }
+    /// <summary>保存成功后触发；设置窗口据此跳过关闭时的主题回滚。</summary>
+    public event EventHandler? Saved;
+
+    public IReadOnlyList<AppearanceOption> ThemeOptions { get; }
 
     public IReadOnlyList<OptionItem> LanguageOptions { get; }
 
@@ -150,6 +162,14 @@ public sealed class SettingsViewModel : ObservableObject
 
     public string VersionText => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.1.0"}";
 
+    private static SolidColorBrush Brush(string hex)
+    {
+        var color = (Color)ColorConverter.ConvertFromString(hex);
+        var brush = new SolidColorBrush(color);
+        brush.Freeze();
+        return brush;
+    }
+
     private void Save()
     {
         ErrorMessage = null;
@@ -189,6 +209,7 @@ public sealed class SettingsViewModel : ObservableObject
             return;
         }
 
+        Saved?.Invoke(this, EventArgs.Empty);
         CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 }

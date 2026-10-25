@@ -7,6 +7,7 @@ using VitaTrace.Core.Abstractions;
 using VitaTrace.Core.Models;
 using VitaTrace.Infrastructure.Devices;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using VitaTrace.Infrastructure.Logging;
 using VitaTrace.Infrastructure.Storage;
 
@@ -35,6 +36,7 @@ public partial class App : Application
     private bool _isDemo;
     private bool _isExiting;
     private bool _minimizedBalloonShown;
+    private DispatcherTimer? _memoryTimer;
 
     public AppSettings Settings { get; private set; } = new();
 
@@ -54,6 +56,7 @@ public partial class App : Application
 
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+        MorphIconAnimator.Register();
 
         try
         {
@@ -68,6 +71,50 @@ public partial class App : Application
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
             Shutdown(1);
+        }
+    }
+
+    /// <summary>立即切换主题（不做过渡），启动、保存设置和回滚时使用。</summary>
+    public void ApplyThemeNow(string preference)
+    {
+        Theme.Apply(preference);
+
+        // 原生标题栏不会自动跟随 WPF 资源切换，需要把 DWM 深色属性重新应用到所有窗口。
+        foreach (Window window in Windows)
+        {
+            WindowEffects.Apply(window, Theme.IsDark);
+        }
+    }
+
+    /// <summary>
+    /// 设置页点击外观时调用。先截图，再切资源，最后用圆形遮罩做扩散/收缩。
+    /// 过渡失败时自动退回立即切换，不影响功能。
+    /// </summary>
+    public void PreviewTheme(string preference, Point screenOrigin, bool reverse)
+    {
+        var windows = new List<Window>();
+        foreach (Window window in Windows)
+        {
+            if (window.IsVisible)
+            {
+                windows.Add(window);
+            }
+        }
+
+        if (windows.Count == 0)
+        {
+            ApplyThemeNow(preference);
+            return;
+        }
+
+        try
+        {
+            ThemeTransition.Play(windows, screenOrigin, () => ApplyThemeNow(preference), reverse);
+        }
+        catch (Exception ex)
+        {
+            Logger.Warn("主题过渡失败，改为立即切换", ex);
+            ApplyThemeNow(preference);
         }
     }
 
@@ -91,13 +138,7 @@ public partial class App : Application
 
         try
         {
-            Theme.Apply(draft.Theme);
-
-            // 原生标题栏不会自动跟随 WPF 资源切换，需要把 DWM 深色属性重新应用到所有窗口。
-            foreach (Window window in Windows)
-            {
-                WindowEffects.Apply(window, Theme.IsDark);
-            }
+            ApplyThemeNow(draft.Theme);
 
             Localization.Apply(draft.Language);
 
@@ -130,6 +171,9 @@ public partial class App : Application
 
         _minimizedBalloonShown = true;
         _tray?.ShowBalloon(Localization["TrayMinimized"], Localization["TrayMinimizedBody"]);
+
+        // 窗口隐藏后是回收工作集的最佳时机，避免托盘常驻时占用持续偏高。
+        MemoryTrimmer.Trim();
     }
 
     /// <summary>真正退出。窗口的 Closing 会检查 IsExiting，避免又被“关闭进托盘”拦住。</summary>
@@ -247,6 +291,34 @@ public partial class App : Application
         // 首次枚举放到窗口显示之后，避免启动阶段被设备 I/O 阻塞。
         _ = _viewModel!.RefreshAsync();
         Logger.Info("主窗口与托盘已就绪");
+
+        // WPF 启动后会有一次较大的工作集峰值（XAML、字体、主题资源）。
+        // 等界面稳定后交还一次工作集；长驻期间每 10 分钟做一次轻量维护。
+        var startupTrim = new DispatcherTimer(DispatcherPriority.Background, Dispatcher)
+        {
+            Interval = TimeSpan.FromSeconds(12),
+        };
+        startupTrim.Tick += (_, _) =>
+        {
+            startupTrim.Stop();
+            MemoryTrimmer.Trim();
+        };
+        startupTrim.Start();
+
+        _memoryTimer = new DispatcherTimer(DispatcherPriority.Background, Dispatcher)
+        {
+            Interval = TimeSpan.FromMinutes(10),
+        };
+
+        // 只在窗口不可见时维护，避免用户正在操作时把正在用的页面换出导致卡顿。
+        _memoryTimer.Tick += (_, _) =>
+        {
+            if (_mainWindow is { IsVisible: false })
+            {
+                MemoryTrimmer.Trim();
+            }
+        };
+        _memoryTimer.Start();
     }
 
     private void RunProbe()

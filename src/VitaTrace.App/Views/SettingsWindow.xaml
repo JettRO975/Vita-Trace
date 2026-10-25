@@ -15,6 +15,7 @@
         UseLayoutRounding="True"
         SnapsToDevicePixels="True">
 
+    <Grid>
     <Border Background="{DynamicResource WindowBackgroundBrush}">
         <Grid>
             <Grid.RowDefinitions>
@@ -32,15 +33,17 @@
                             <TextBlock Text="{DynamicResource Appearance}" Style="{StaticResource SectionTitleStyle}" />
 
                             <TextBlock Text="{DynamicResource Theme}" FontSize="13" Margin="0,0,0,8" />
-                            <ListBox ItemsSource="{Binding ThemeOptions}"
+                            <ListBox x:Name="AppearanceList"
+                                     ItemsSource="{Binding ThemeOptions}"
                                      SelectedValue="{Binding Theme, Mode=TwoWay}"
                                      SelectedValuePath="Value"
+                                     SelectionChanged="AppearanceList_SelectionChanged"
                                      Background="Transparent" BorderThickness="0"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                      Margin="0,0,0,16">
                                 <ListBox.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" />
+                                        <WrapPanel />
                                     </ItemsPanelTemplate>
                                 </ListBox.ItemsPanel>
                                 <ListBox.ItemContainerStyle>
@@ -50,8 +53,15 @@
                                 </ListBox.ItemContainerStyle>
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Label}" FontSize="12"
-                                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,7,0">
+                                                <Ellipse Width="6" Height="6" Fill="{Binding Color1}" Margin="0,0,3,0" />
+                                                <Ellipse Width="6" Height="6" Fill="{Binding Color2}" Margin="0,0,3,0" />
+                                                <Ellipse Width="6" Height="6" Fill="{Binding Color3}" />
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Label}" FontSize="12" VerticalAlignment="Center"
+                                                       Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                                        </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
@@ -262,4 +272,5 @@
             </Border>
         </Grid>
     </Border>
+    </Grid>
 </Window>

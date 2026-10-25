@@ -1,7 +1,10 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using VitaTrace.App.Services;
 using VitaTrace.App.ViewModels;
 using VitaTrace.App.Views;
@@ -28,11 +31,14 @@ public partial class MainWindow : Window
     private readonly DispatcherTimer _deviceChangeTimer;
     private SettingsWindow? _settingsWindow;
     private HwndSource? _hwndSource;
+    private bool _entrancePlayed;
 
     public MainWindow()
     {
         _app = (App)Application.Current;
         InitializeComponent();
+
+        Loaded += OnLoaded;
 
         // 设备变更消息可能连续到达（一个 USB 设备会带来多个节点变化），
         // 用 800ms 防抖合并成一次刷新，避免反复枚举造成界面卡顿。
@@ -44,6 +50,69 @@ public partial class MainWindow : Window
 
         _app.Localization.LanguageChanged += OnLanguageChanged;
         UpdateTexts();
+    }
+
+    /// <summary>
+    /// 首次显示时的错落进场：品牌行、横幅、设备列表、详情依次淡入并上移。
+    /// 只播一次；从托盘恢复时不再重复，避免每次打开都像重新启动。
+    /// </summary>
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_entrancePlayed)
+        {
+            return;
+        }
+
+        _entrancePlayed = true;
+
+        var items = new (FrameworkElement Element, int DelayMs)[]
+        {
+            (BrandRow, 0),
+            (BannerHost, 55),
+            (DevicePanel, 120),
+            (DetailPanel, 185)
+        };
+
+        if (!SystemParameters.ClientAreaAnimation)
+        {
+            foreach (var (element, _) in items)
+            {
+                element.Opacity = 1;
+                element.RenderTransform = Transform.Identity;
+            }
+
+            return;
+        }
+
+        foreach (var (element, delayMs) in items)
+        {
+            element.Opacity = 0;
+            var translate = new TranslateTransform(0, 12);
+            element.RenderTransform = translate;
+
+            var fade = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(360))
+            {
+                BeginTime = TimeSpan.FromMilliseconds(delayMs),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            var rise = new DoubleAnimation(12, 0, TimeSpan.FromMilliseconds(360))
+            {
+                BeginTime = TimeSpan.FromMilliseconds(delayMs),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            element.BeginAnimation(OpacityProperty, fade);
+            translate.BeginAnimation(TranslateTransform.YProperty, rise);
+        }
+    }
+
+    /// <summary>
+    /// 切换设备时把详情滚动条复位到顶部。
+    /// 否则从设置窗口返回、或查看过长的设备详情后，标题和电量会被上一次的滚动位置顶出视野。
+    /// </summary>
+    private void Devices_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        DetailScroll?.ScrollToTop();
     }
 
     protected override void OnSourceInitialized(EventArgs e)
@@ -162,6 +231,12 @@ public partial class MainWindow : Window
             return;
         }
 
+        if (viewModel.IsRenaming)
+        {
+            viewModel.CommitRename();
+            return;
+        }
+
         viewModel.BeginRename();
         RenameTextBox.Focus();
         RenameTextBox.SelectAll();
@@ -186,6 +261,16 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Minimize_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    /// <summary>
+    /// 关闭按钮和原生标题栏的 X 行为一致：按设置最小化到托盘，或在退出时真正关闭。
+    /// </summary>
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         // 设置窗口是单例：连续点击（或输入设备重复触发 Click）时不叠出多个窗口。
@@ -195,21 +280,33 @@ public partial class MainWindow : Window
             return;
         }
 
-        var viewModel = new SettingsViewModel(
-            _app.Settings.Clone(),
-            _app.ApplySettings,
-            _app.Localization);
-
-        var window = new SettingsWindow
+        try
         {
-            Owner = this,
-            DataContext = viewModel
-        };
+            var viewModel = new SettingsViewModel(
+                _app.Settings.Clone(),
+                _app.ApplySettings,
+                _app.Localization);
 
-        _settingsWindow = window;
-        window.Closed += (_, _) => _settingsWindow = null;
-        viewModel.CloseRequested += (_, _) => window.Close();
-        window.ShowDialog();
+            var window = new SettingsWindow
+            {
+                Owner = this,
+                DataContext = viewModel
+            };
+
+            _settingsWindow = window;
+            window.Closed += (_, _) => _settingsWindow = null;
+            viewModel.CloseRequested += (_, _) => window.Close();
+            window.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            _app.Logger.Error("打开设置失败", ex);
+            MessageBox.Show(
+                _app.Localization.Format("FatalError", ex.Message),
+                "Vita Trace",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
     }
 
     protected override void OnPreviewKeyDown(KeyEventArgs e)
