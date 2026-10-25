@@ -29,9 +29,11 @@ public partial class MainWindow : Window
 
     private readonly App _app;
     private readonly DispatcherTimer _deviceChangeTimer;
-    private SettingsWindow? _settingsWindow;
+    private SettingsViewModel? _settingsViewModel;
     private HwndSource? _hwndSource;
     private bool _entrancePlayed;
+    private bool _navigating;
+    private string _currentPage = "Devices";
 
     public MainWindow()
     {
@@ -64,6 +66,9 @@ public partial class MainWindow : Window
         }
 
         _entrancePlayed = true;
+
+        // 首次显示时确保设备页和左侧导航状态一致（XAML 里 IsChecked 可能早于页面创建）。
+        ShowPage(_currentPage);
 
         var items = new (FrameworkElement Element, int DelayMs)[]
         {
@@ -271,42 +276,84 @@ public partial class MainWindow : Window
     /// </summary>
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
-    private void Settings_Click(object sender, RoutedEventArgs e)
+    /// <summary>左侧导航切换。设置页是同一窗口里的页面，不再弹模态窗口。</summary>
+    private void Nav_Checked(object sender, RoutedEventArgs e)
     {
-        // 设置窗口是单例：连续点击（或输入设备重复触发 Click）时不叠出多个窗口。
-        if (_settingsWindow is { IsVisible: true })
+        if (_navigating || !IsLoaded || sender is not RadioButton { Tag: string page })
         {
-            _settingsWindow.Activate();
             return;
         }
 
-        try
-        {
-            var viewModel = new SettingsViewModel(
-                _app.Settings.Clone(),
-                _app.ApplySettings,
-                _app.Localization);
+        ShowPage(page);
+    }
 
-            var window = new SettingsWindow
-            {
-                Owner = this,
-                DataContext = viewModel
-            };
-
-            _settingsWindow = window;
-            window.Closed += (_, _) => _settingsWindow = null;
-            viewModel.CloseRequested += (_, _) => window.Close();
-            window.ShowDialog();
-        }
-        catch (Exception ex)
+    private void ShowPage(string page)
+    {
+        if (page != "Settings")
         {
-            _app.Logger.Error("打开设置失败", ex);
-            MessageBox.Show(
-                _app.Localization.Format("FatalError", ex.Message),
-                "Vita Trace",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            LeaveSettings();
         }
+
+        DevicesPage.Visibility = page == "Devices" ? Visibility.Visible : Visibility.Collapsed;
+        SettingsPage.Visibility = page == "Settings" ? Visibility.Visible : Visibility.Collapsed;
+        AboutPage.Visibility = page == "About" ? Visibility.Visible : Visibility.Collapsed;
+
+        PageTitle.Text = page switch
+        {
+            "Settings" => _app.Localization["Settings"],
+            "About" => _app.Localization["About"],
+            _ => _app.Localization["DevicesPageTitle"]
+        };
+        PageSubtitle.Text = page switch
+        {
+            "Settings" => _app.Localization["SettingsPageSubtitle"],
+            "About" => _app.Localization["AboutPageSubtitle"],
+            _ => _app.Localization["DevicesPageSubtitle"]
+        };
+
+        _navigating = true;
+        NavDevices.IsChecked = page == "Devices";
+        NavSettings.IsChecked = page == "Settings";
+        NavAbout.IsChecked = page == "About";
+        _navigating = false;
+        _currentPage = page;
+
+        if (page == "Settings")
+        {
+            EnterSettings();
+        }
+    }
+
+    private void EnterSettings()
+    {
+        if (_settingsViewModel is not null)
+        {
+            return;
+        }
+
+        _settingsViewModel = new SettingsViewModel(
+            _app.Settings.Clone(),
+            _app.ApplySettings,
+            _app.Localization);
+        _settingsViewModel.CloseRequested += OnSettingsCloseRequested;
+        SettingsPage.Activate(_settingsViewModel);
+    }
+
+    private void LeaveSettings()
+    {
+        if (_settingsViewModel is null)
+        {
+            return;
+        }
+
+        _settingsViewModel.CloseRequested -= OnSettingsCloseRequested;
+        SettingsPage.Deactivate();
+        _settingsViewModel = null;
+    }
+
+    private void OnSettingsCloseRequested(object? sender, EventArgs e)
+    {
+        ShowPage("Devices");
     }
 
     protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -322,7 +369,7 @@ public partial class MainWindow : Window
         }
         else if (e.Key == Key.OemComma && Keyboard.Modifiers == ModifierKeys.Control)
         {
-            Settings_Click(this, new RoutedEventArgs());
+            ShowPage("Settings");
             e.Handled = true;
         }
 
@@ -331,5 +378,13 @@ public partial class MainWindow : Window
 
     private void OnLanguageChanged(object? sender, EventArgs e) => UpdateTexts();
 
-    private void UpdateTexts() => SettingsButton.ToolTip = _app.Localization["Settings"];
+    private void UpdateTexts()
+    {
+        if (!IsLoaded)
+        {
+            return;
+        }
+
+        ShowPage(_currentPage);
+    }
 }

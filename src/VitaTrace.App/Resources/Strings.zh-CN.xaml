@@ -77,6 +77,12 @@
     <sys:String x:Key="LowBatteryNotifyHint">低于阈值时显示托盘气泡，并让托盘电量图标变红。</sys:String>
 
     <sys:String x:Key="About">关于</sys:String>
+    <sys:String x:Key="DevicesPageTitle">设备列表</sys:String>
+    <sys:String x:Key="DevicesPageSubtitle">无线外设电量，一眼看清</sys:String>
+    <sys:String x:Key="SettingsPageSubtitle">调整刷新、提醒和外观</sys:String>
+    <sys:String x:Key="AboutPageSubtitle">关于 Vita Trace</sys:String>
+    <sys:String x:Key="AboutDescription">Vita Trace 是一个本地运行的无线外设电量监控工具，支持 2.4G 接收器、蓝牙与有线设备。电量读数来自系统或设备协议，不会伪造百分比。</sys:String>
+    <sys:String x:Key="AboutPrivacy">设备信息、电量历史与设置都保存在本机。软件不会上传数据，也不需要管理员权限。</sys:String>
     <sys:String x:Key="Version">版本</sys:String>
     <sys:String x:Key="LogFile">日志文件</sys:String>
     <sys:String x:Key="OpenLogFolder">打开日志目录</sys:String>

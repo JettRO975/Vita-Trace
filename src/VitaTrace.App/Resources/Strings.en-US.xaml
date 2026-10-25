@@ -77,6 +77,12 @@
     <sys:String x:Key="LowBatteryNotifyHint">Shows a tray balloon and turns the tray icon red below the threshold.</sys:String>
 
     <sys:String x:Key="About">About</sys:String>
+    <sys:String x:Key="DevicesPageTitle">Devices</sys:String>
+    <sys:String x:Key="DevicesPageSubtitle">Wireless device battery, at a glance</sys:String>
+    <sys:String x:Key="SettingsPageSubtitle">Refresh, alerts and appearance</sys:String>
+    <sys:String x:Key="AboutPageSubtitle">About Vita Trace</sys:String>
+    <sys:String x:Key="AboutDescription">Vita Trace is a local wireless device battery monitor for 2.4G receivers, Bluetooth and wired devices. Readings come from system or device protocols; percentages are never invented.</sys:String>
+    <sys:String x:Key="AboutPrivacy">Device details, battery history and settings stay on this PC. Nothing is uploaded and administrator rights are not required.</sys:String>
     <sys:String x:Key="Version">Version</sys:String>
     <sys:String x:Key="LogFile">Log file</sys:String>
     <sys:String x:Key="OpenLogFolder">Open log folder</sys:String>

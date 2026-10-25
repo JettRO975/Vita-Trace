@@ -142,6 +142,9 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public string DeviceCountText => _l10n.Format("DeviceCount", Devices.Count);
 
+    /// <summary>左侧导航上的精简设备数徽标。</summary>
+    public string DeviceBadgeText => Devices.Count.ToString();
+
     public string LastUpdatedText => _lastUpdated is { } time
         ? _l10n.Format("LastUpdated", time.LocalDateTime.ToString("HH:mm:ss"))
         : _l10n["NotAvailable"];
@@ -279,6 +282,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
 
         OnPropertyChanged(nameof(DeviceCountText));
+        OnPropertyChanged(nameof(DeviceBadgeText));
         OnPropertyChanged(nameof(LastUpdatedText));
         OnPropertyChanged(nameof(RefreshButtonText));
         OnPropertyChanged(nameof(EmptyTitle));
@@ -371,6 +375,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
         OnPropertyChanged(nameof(HasDevices));
         OnPropertyChanged(nameof(DeviceCountText));
+        OnPropertyChanged(nameof(DeviceBadgeText));
         OnPropertyChanged(nameof(EmptyTitle));
         OnPropertyChanged(nameof(EmptyHint));
         TrayStateChanged?.Invoke(this, EventArgs.Empty);

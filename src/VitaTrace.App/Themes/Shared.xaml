@@ -267,6 +267,39 @@
         </Setter>
     </Style>
 
+    <!-- 左侧主导航项：图标 + 文字 + 可选计数徽标 -->
+    <Style x:Key="NavItemStyle" TargetType="RadioButton">
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Grid Margin="0,2">
+                        <Border x:Name="Bd" CornerRadius="10" Background="Transparent" Padding="12,10">
+                            <ContentPresenter />
+                        </Border>
+                        <Border x:Name="Bar" Width="3" Height="18" CornerRadius="2"
+                                HorizontalAlignment="Left" VerticalAlignment="Center"
+                                Margin="0,0,0,0" Background="{DynamicResource AccentBrush}"
+                                Visibility="Collapsed" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource CardHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                            <Setter TargetName="Bar" Property="Visibility" Value="Visible" />
+                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- 设置里的“选项胶囊” -->
     <Style x:Key="OptionChipItemStyle" TargetType="ListBoxItem">
         <Setter Property="Margin" Value="0,0,8,0" />
