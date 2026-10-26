@@ -24,6 +24,7 @@
   <ItemGroup>
     <!-- 同时作为窗口图标（pack URI）与 exe 图标（ApplicationIcon）。 -->
     <Resource Include="Assets\VitaTrace.ico" />
+    <Resource Include="Assets\VitaTrace-Logo.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VitaTrace.Core\VitaTrace.Core.csproj" />

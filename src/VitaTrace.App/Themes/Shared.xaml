@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- 字体：Segoe UI 在 Win10/11 都有；中文由系统字体回退补齐。 -->
-    <FontFamily x:Key="AppFontFamily">Segoe UI</FontFamily>
+    <FontFamily x:Key="AppFontFamily">Microsoft YaHei UI, Microsoft YaHei, Segoe UI</FontFamily>
     <!-- WPF 的 FontFamily 字符串不支持逗号回退列表；使用 Win10 1809+ 都自带的 MDL2，
          避免把整串当成一个不存在的字体名，导致标题栏按钮显示成方框。 -->
     <FontFamily x:Key="IconFontFamily">Segoe MDL2 Assets</FontFamily>
@@ -378,7 +378,7 @@
                                 BorderBrush="{DynamicResource BorderBrush}"
                                 BorderThickness="1">
                             <Grid>
-                                <Border x:Name="TrackOn" Background="#2FBF71" Opacity="0" />
+                                <Border x:Name="TrackOn" CornerRadius="12" Background="#2FBF71" Opacity="0" />
                                 <Border x:Name="Thumb"
                                         Width="18" Height="18"
                                         CornerRadius="9"
@@ -477,7 +477,9 @@
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="Padding" Value="10,2" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="CaretBrush" Value="{DynamicResource TextPrimaryBrush}" />
         <Setter Property="Template">
             <Setter.Value>

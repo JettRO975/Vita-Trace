@@ -56,7 +56,12 @@ public sealed class AppSettings
     public void Normalize()
     {
         Language = NormalizeChoice(Language, "system", "zh-CN", "en-US");
-        Theme = NormalizeChoice(Theme, "sea", "dusk", "system", "light", "dark");
+        if (Theme == "system")
+        {
+            Theme = "sea";
+        }
+
+        Theme = NormalizeChoice(Theme, "sea", "dusk", "light", "dark");
         RefreshSeconds = Math.Clamp(RefreshSeconds, 15, 3600);
         LowBatteryThreshold = Math.Clamp(LowBatteryThreshold, 5, 50);
         HistoryRetentionDays = Math.Clamp(HistoryRetentionDays, 7, 365);

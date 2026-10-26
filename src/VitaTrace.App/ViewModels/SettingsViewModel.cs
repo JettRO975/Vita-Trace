@@ -46,7 +46,8 @@ public sealed class SettingsViewModel : ObservableObject
         _apply = apply;
         _l10n = localization;
 
-        _theme = draft.Theme;
+        _theme = draft.Theme == "system" ? "sea" : draft.Theme;
+        _draft.Theme = _theme;
         _language = draft.Language;
         _refreshSeconds = draft.RefreshSeconds;
         _lowBatteryThreshold = draft.LowBatteryThreshold;
@@ -59,7 +60,6 @@ public sealed class SettingsViewModel : ObservableObject
         {
             new AppearanceOption("sea", _l10n["ThemeSea"], Brush("#598BFD"), Brush("#9AD4CB"), Brush("#35B3C9")),
             new AppearanceOption("dusk", _l10n["ThemeDusk"], Brush("#945FFA"), Brush("#F698B8"), Brush("#F7DFD9")),
-            new AppearanceOption("system", _l10n["ThemeSystem"], Brush("#D7DEEA"), Brush("#AEB8C8"), Brush("#8A96AD")),
             new AppearanceOption("light", _l10n["ThemeLight"], Brush("#FFFFFF"), Brush("#2F6BFF"), Brush("#E2E6EE")),
             new AppearanceOption("dark", _l10n["ThemeDark"], Brush("#1E1F24"), Brush("#7C9CFF"), Brush("#50545E"))
         };
