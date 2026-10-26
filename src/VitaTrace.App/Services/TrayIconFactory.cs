@@ -99,42 +99,16 @@ public static class TrayIconFactory
     }
 
     /// <summary>
-    /// ^ 溢出区的应用小图标：运行时绘制蓝色圆角方块 + 白色 V，
-    /// 视觉上与任务栏大图标一致，同时完全由本进程持有 HICON，避免资源流/句柄生命周期问题。
+    /// ^ 溢出区的应用小图标：直接使用与 exe 相同的透明 ICO。
+    /// 不再运行时画“V”，保证任务栏、标题栏、托盘三处图案一致。
     /// </summary>
     public static Icon CreateApp()
     {
-        using var bitmap = new Bitmap(32, 32, PixelFormat.Format32bppArgb);
-        using (var graphics = Graphics.FromImage(bitmap))
-        {
-            graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-            graphics.Clear(Color.Transparent);
-
-            // 与已验证可用的 Create(false) 使用同一种基础绘制方式（实心圆 + 白色字形），
-            // 避免 GraphicsPath 圆角方块在 HICON 转换时出现 alpha 丢失。
-            using var background = new SolidBrush(Color.FromArgb(47, 107, 255));
-            graphics.FillEllipse(background, 1f, 1f, 30f, 30f);
-
-            using var font = new Font("Segoe UI", 19f, FontStyle.Bold, GraphicsUnit.Pixel);
-            using var format = new StringFormat
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-            graphics.DrawString("V", font, Brushes.White, new RectangleF(0f, -1f, 32f, 32f), format);
-        }
-
-        var handle = bitmap.GetHicon();
-        try
-        {
-            using var temporary = Icon.FromHandle(handle);
-            return (Icon)temporary.Clone();
-        }
-        finally
-        {
-            _ = DestroyIcon(handle);
-        }
+        var uri = new Uri("pack://application:,,,/Assets/VitaTrace.ico", UriKind.Absolute);
+        var resource = System.Windows.Application.GetResourceStream(uri)
+            ?? throw new InvalidOperationException("找不到托盘图标资源 Assets/VitaTrace.ico");
+        using var stream = resource.Stream;
+        return new Icon(stream, 32, 32);
     }
 
     public static Icon Create(bool alert)
