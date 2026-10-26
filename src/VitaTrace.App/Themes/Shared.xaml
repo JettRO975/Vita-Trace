@@ -375,8 +375,7 @@
                                 CornerRadius="12"
                                 ClipToBounds="True"
                                 Background="#D9DEE8"
-                                BorderBrush="{DynamicResource BorderBrush}"
-                                BorderThickness="1">
+                                BorderThickness="0">
                             <Grid>
                                 <Border x:Name="TrackOn" CornerRadius="12" Background="#2FBF71" Opacity="0" />
                                 <Border x:Name="Thumb"
