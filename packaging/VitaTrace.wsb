@@ -2,7 +2,7 @@
   <!-- Vita Trace smoke test in Windows Sandbox. Adjust HostFolder if the repo moves. -->
   <MappedFolders>
     <MappedFolder>
-      <HostFolder>E:\Vita Trace\dist\VitaTrace-0.7.0-win-x64</HostFolder>
+      <HostFolder>E:\Vita Trace\dist\VitaTrace-1.0.0-win-x64</HostFolder>
       <SandboxFolder>C:\VitaTrace</SandboxFolder>
       <ReadOnly>true</ReadOnly>
     </MappedFolder>
