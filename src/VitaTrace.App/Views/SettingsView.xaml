@@ -12,7 +12,7 @@
         <!-- 设置内容直接嵌在主窗口里，切换主题时遮罩只覆盖一个窗口，视觉更连贯。 -->
         <ScrollViewer VerticalScrollBarVisibility="Hidden"
                       HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
-            <StackPanel>
+            <StackPanel Margin="0,24,0,24">
 
                 <!-- 校验错误条；自动保存失败时显示在顶部，不占用底部按钮区。 -->
                 <Border Background="{DynamicResource BannerWarningBackgroundBrush}"
@@ -25,7 +25,7 @@
                 </Border>
 
                 <!-- 外观 -->
-                <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,14">
+                <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,24">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource Appearance}" Style="{StaticResource SectionTitleStyle}" />
 
@@ -90,7 +90,7 @@
                 </Border>
 
                 <!-- 监控 -->
-                <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,14">
+                <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,24">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource Monitoring}" Style="{StaticResource SectionTitleStyle}" />
 
@@ -105,7 +105,7 @@
                                            TextWrapping="Wrap" MaxWidth="390" Margin="0,3,0,0" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBox Width="76" Style="{StaticResource AppTextBoxStyle}"
+                                <TextBox Width="64" Style="{StaticResource AppTextBoxStyle}"
                                          TextAlignment="Right"
                                          Text="{Binding RefreshSeconds, UpdateSourceTrigger=LostFocus}" />
                                 <TextBlock Text="{DynamicResource Seconds}" Margin="8,0,0,0"
@@ -121,7 +121,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{DynamicResource LowThreshold}" FontSize="13" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBox Width="76" Style="{StaticResource AppTextBoxStyle}"
+                                <TextBox Width="64" Style="{StaticResource AppTextBoxStyle}"
                                          TextAlignment="Right"
                                          Text="{Binding LowBatteryThreshold, UpdateSourceTrigger=LostFocus}" />
                                 <TextBlock Text="{DynamicResource Percent}" Margin="8,0,0,0"
@@ -137,7 +137,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{DynamicResource HistoryRetention}" FontSize="13" VerticalAlignment="Center" />
                             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBox Width="76" Style="{StaticResource AppTextBoxStyle}"
+                                <TextBox Width="64" Style="{StaticResource AppTextBoxStyle}"
                                          TextAlignment="Right"
                                          Text="{Binding HistoryRetentionDays, UpdateSourceTrigger=LostFocus}" />
                                 <TextBlock Text="{DynamicResource Days}" Margin="8,0,0,0"
@@ -149,7 +149,7 @@
                 </Border>
 
                 <!-- 行为 -->
-                <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,14">
+                <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,24">
                     <StackPanel>
                         <TextBlock Text="{DynamicResource Behavior}" Style="{StaticResource SectionTitleStyle}" />
 

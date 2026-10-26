@@ -102,7 +102,7 @@
         </Border>
 
         <!-- ===== 主内容：左侧导航 + 右侧页面 ===== -->
-        <Grid Grid.Row="1" Margin="14,14,14,0">
+        <Grid Grid.Row="1" Margin="14,24,14,24">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="210" />
                 <ColumnDefinition Width="14" />
@@ -111,7 +111,7 @@
 
             <!-- 左侧主导航：设备 / 设置 / 关于，设置不再弹出独立窗口 -->
             <Border Grid.Column="0" CornerRadius="12" Padding="10,12,10,10"
-                    Background="{DynamicResource SurfaceBrush}"
+                    Background="{DynamicResource WindowBackgroundBrush}"
                     BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -138,13 +138,6 @@
                                   Data="M3,4 H21 V16 H3 Z M8,20 H16 M12,16 V20" />
                             <TextBlock Grid.Column="1" Text="{DynamicResource Devices}" FontSize="13"
                                        FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center" />
-                            <Border Grid.Column="2" MinWidth="22" Height="22" CornerRadius="12"
-                                    Background="{DynamicResource AccentBrush}" Padding="6,0"
-                                    Visibility="{Binding HasDevices, Converter={StaticResource BoolToVis}}">
-                                <TextBlock Text="{Binding DeviceBadgeText}" Foreground="White"
-                                           FontSize="10" FontWeight="SemiBold"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            </Border>
                         </Grid>
                     </RadioButton>
 

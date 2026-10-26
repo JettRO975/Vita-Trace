@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- 字体：Segoe UI 在 Win10/11 都有；中文由系统字体回退补齐。 -->
@@ -267,7 +267,7 @@
         </Setter>
     </Style>
 
-    <!-- 左侧主导航项：图标 + 文字 + 可选计数徽标 -->
+    <!-- 左侧主导航项：图标 + 文字；选中底色用透明度动画平滑过渡。 -->
     <Style x:Key="NavItemStyle" TargetType="RadioButton">
         <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -277,6 +277,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
                     <Grid Margin="0,2">
+                        <Border x:Name="Highlight" CornerRadius="12"
+                                Background="{DynamicResource AccentSoftBrush}"
+                                Opacity="0" IsHitTestVisible="False" />
                         <Border x:Name="Bd" CornerRadius="12" Background="Transparent" Padding="12,10">
                             <ContentPresenter />
                         </Border>
@@ -286,11 +289,40 @@
                                 Visibility="Collapsed" />
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True" />
+                                <Condition Property="IsChecked" Value="False" />
+                            </MultiTrigger.Conditions>
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource CardHoverBrush}" />
-                        </Trigger>
+                        </MultiTrigger>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Highlight"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1" Duration="0:0:0.22">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Highlight"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" Duration="0:0:0.18">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                             <Setter TargetName="Bar" Property="Visibility" Value="Visible" />
                             <Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
                         </Trigger>
@@ -330,7 +362,7 @@
         </Setter>
     </Style>
 
-    <!-- 开关 -->
+    <!-- 开关：350ms 弹性滑动，滑块横向拉伸后回弹，轨道灰→绿。 -->
     <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
@@ -340,25 +372,89 @@
                         <Border x:Name="Track"
                                 Width="44" Height="24"
                                 CornerRadius="12"
-                                Background="{DynamicResource SurfaceAltBrush}"
+                                ClipToBounds="True"
                                 BorderBrush="{DynamicResource BorderBrush}"
                                 BorderThickness="1">
-                            <Border x:Name="Thumb"
-                                    Width="18" Height="18"
-                                    CornerRadius="9"
-                                    Margin="2,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    Background="{DynamicResource TextTertiaryBrush}" />
+                            <Grid>
+                                <Border x:Name="TrackOff" Background="{DynamicResource SurfaceAltBrush}" />
+                                <Border x:Name="TrackOn" Background="{DynamicResource SuccessBrush}" Opacity="0" />
+                                <Border x:Name="Thumb"
+                                        Width="18" Height="18"
+                                        CornerRadius="9"
+                                        Margin="3,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Background="White">
+                                    <Border.RenderTransform>
+                                        <TranslateTransform x:Name="ThumbTranslate" X="0" />
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Grid>
                         </Border>
                         <ContentPresenter Margin="10,0,0,0" VerticalAlignment="Center" />
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Track" Property="Background" Value="{DynamicResource AccentBrush}" />
-                            <Setter TargetName="Track" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-                            <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
-                            <Setter TargetName="Thumb" Property="Margin" Value="0,0,2,0" />
-                            <Setter TargetName="Thumb" Property="Background" Value="White" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOn"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="1" Duration="0:0:0.35" />
+                                        <DoubleAnimation Storyboard.TargetName="ThumbTranslate"
+                                                         Storyboard.TargetProperty="X"
+                                                         To="20" Duration="0:0:0.35">
+                                            <DoubleAnimation.EasingFunction>
+                                                <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Thumb"
+                                                                       Storyboard.TargetProperty="Width">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0" Value="18" />
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="24">
+                                                <EasingDoubleKeyFrame.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut" />
+                                                </EasingDoubleKeyFrame.EasingFunction>
+                                            </EasingDoubleKeyFrame>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="18">
+                                                <EasingDoubleKeyFrame.EasingFunction>
+                                                    <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
+                                                </EasingDoubleKeyFrame.EasingFunction>
+                                            </EasingDoubleKeyFrame>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="TrackOn"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         To="0" Duration="0:0:0.35" />
+                                        <DoubleAnimation Storyboard.TargetName="ThumbTranslate"
+                                                         Storyboard.TargetProperty="X"
+                                                         To="0" Duration="0:0:0.35">
+                                            <DoubleAnimation.EasingFunction>
+                                                <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Thumb"
+                                                                       Storyboard.TargetProperty="Width">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0" Value="18" />
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="24">
+                                                <EasingDoubleKeyFrame.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut" />
+                                                </EasingDoubleKeyFrame.EasingFunction>
+                                            </EasingDoubleKeyFrame>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="18">
+                                                <EasingDoubleKeyFrame.EasingFunction>
+                                                    <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
+                                                </EasingDoubleKeyFrame.EasingFunction>
+                                            </EasingDoubleKeyFrame>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.45" />

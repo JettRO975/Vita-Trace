@@ -153,7 +153,7 @@ public static class ThemeTransition
                 reverse ? 0.1 : MaxRadius,
                 new Duration(duration))
             {
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut },
                 FillBehavior = FillBehavior.Stop
             };
 
