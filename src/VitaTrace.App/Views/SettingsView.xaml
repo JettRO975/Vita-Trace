@@ -9,15 +9,20 @@
              UseLayoutRounding="True"
              SnapsToDevicePixels="True">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="64" />
-        </Grid.RowDefinitions>
-
         <!-- 设置内容直接嵌在主窗口里，切换主题时遮罩只覆盖一个窗口，视觉更连贯。 -->
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Hidden"
+        <ScrollViewer VerticalScrollBarVisibility="Hidden"
                       HorizontalScrollBarVisibility="Disabled" Padding="0,0,4,0">
             <StackPanel>
+
+                <!-- 校验错误条；自动保存失败时显示在顶部，不占用底部按钮区。 -->
+                <Border Background="{DynamicResource BannerWarningBackgroundBrush}"
+                        BorderBrush="{DynamicResource BannerWarningBorderBrush}"
+                        BorderThickness="1" CornerRadius="12" Padding="12,8"
+                        Margin="0,0,0,12"
+                        Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}">
+                    <TextBlock Text="{Binding ErrorMessage}" FontSize="12"
+                               Foreground="{DynamicResource DangerBrush}" TextWrapping="Wrap" />
+                </Border>
 
                 <!-- 外观 -->
                 <Border Style="{StaticResource CardBorderStyle}" Padding="18,16" Margin="0,0,0,14">
@@ -214,23 +219,11 @@
                                 VerticalAlignment="Center" Margin="12,0,0,0" />
                     </Grid>
                 </Border>
+
+                <!-- 修改即保存，不提供单独的保存/取消按钮。 -->
+                <TextBlock Text="{DynamicResource AutoSaveHint}" Style="{StaticResource TinyTextStyle}"
+                           HorizontalAlignment="Right" Margin="2,2,2,10" />
             </StackPanel>
         </ScrollViewer>
-
-        <!-- 底部操作区 -->
-        <Border Grid.Row="1" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0"
-                Background="{DynamicResource TitleBarBrush}">
-            <Grid Margin="4,0">
-                <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerBrush}"
-                           FontSize="12" VerticalAlignment="Center"
-                           Visibility="{Binding HasError, Converter={StaticResource BoolToVis}}" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                    <Button Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,10,0"
-                            Content="{DynamicResource Cancel}" Command="{Binding CancelCommand}" />
-                    <Button Style="{StaticResource PrimaryButtonStyle}"
-                            Content="{DynamicResource Save}" Command="{Binding SaveCommand}" />
-                </StackPanel>
-            </Grid>
-        </Border>
     </Grid>
 </UserControl>

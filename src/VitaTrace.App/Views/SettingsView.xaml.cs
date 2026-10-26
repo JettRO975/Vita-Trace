@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using VitaTrace.App.Services;
 using VitaTrace.App.ViewModels;
 
@@ -13,45 +15,68 @@ namespace VitaTrace.App.Views;
 /// </summary>
 public partial class SettingsView : UserControl
 {
+    private static readonly HashSet<string> AutoSaveProperties = new()
+    {
+        nameof(SettingsViewModel.Theme),
+        nameof(SettingsViewModel.Language),
+        nameof(SettingsViewModel.RefreshSeconds),
+        nameof(SettingsViewModel.LowBatteryThreshold),
+        nameof(SettingsViewModel.HistoryRetentionDays),
+        nameof(SettingsViewModel.StartWithWindows),
+        nameof(SettingsViewModel.MinimizeToTrayOnClose),
+        nameof(SettingsViewModel.LowBatteryNotifications)
+    };
+
     private SettingsViewModel? _viewModel;
     private bool _ready;
-    private bool _saved;
-    private string _originalTheme = "sea";
+    private bool _inThemeChange;
     private string _currentTheme = "sea";
     private string _previousTheme = "sea";
+    private readonly DispatcherTimer _themeSaveTimer;
 
     public SettingsView()
     {
         InitializeComponent();
         DataContextChanged += (_, _) => HookViewModel();
+
+        // 主题动画播放完再落盘，避免保存时重新 Apply 主题打断遮罩动画。
+        _themeSaveTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1000) };
+        _themeSaveTimer.Tick += (_, _) =>
+        {
+            _themeSaveTimer.Stop();
+            if (_ready)
+            {
+                _viewModel?.AutoSave();
+            }
+        };
     }
 
     /// <summary>进入设置页：绑定新草稿，并记录进入时的主题。</summary>
     public void Activate(SettingsViewModel viewModel)
     {
         _ready = false;
-        _saved = false;
+        _themeSaveTimer.Stop();
         DataContext = viewModel;
         HookViewModel();
 
-        _originalTheme = viewModel.Theme;
-        _currentTheme = _originalTheme;
-        _previousTheme = _originalTheme;
+        _currentTheme = viewModel.Theme;
+        _previousTheme = _currentTheme;
         _ready = true;
     }
 
-    /// <summary>离开设置页：未保存的预览主题回滚到进入前的值。</summary>
+    /// <summary>离开设置页：每次修改都已自动保存，不需要回滚预览主题。</summary>
     public void Deactivate()
     {
-        if (_ready && !_saved && _currentTheme != _originalTheme && Application.Current is App app)
+        _ready = false;
+        if (_themeSaveTimer.IsEnabled)
         {
-            app.ApplyThemeNow(_originalTheme);
+            _themeSaveTimer.Stop();
+            _viewModel?.AutoSave();
         }
 
-        _ready = false;
         if (_viewModel is not null)
         {
-            _viewModel.Saved -= OnSaved;
+            _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
         _viewModel = null;
@@ -62,17 +87,35 @@ public partial class SettingsView : UserControl
     {
         if (_viewModel is not null)
         {
-            _viewModel.Saved -= OnSaved;
+            _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
 
         _viewModel = DataContext as SettingsViewModel;
         if (_viewModel is not null)
         {
-            _viewModel.Saved += OnSaved;
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         }
     }
 
-    private void OnSaved(object? sender, EventArgs e) => _saved = true;
+    /// <summary>
+    /// 设置项变化后自动保存；数字框在 LostFocus 时更新，因此不会每敲一个字符就保存一次。
+    /// </summary>
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (!_ready || _inThemeChange || e.PropertyName is null ||
+            !AutoSaveProperties.Contains(e.PropertyName))
+        {
+            return;
+        }
+
+        Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+        {
+            if (_ready)
+            {
+                _viewModel?.AutoSave();
+            }
+        }));
+    }
 
     /// <summary>
     /// 点击外观胶囊时立即预览；点回上一次选中的外观时圆形遮罩收缩，
@@ -87,20 +130,45 @@ public partial class SettingsView : UserControl
             return;
         }
 
-        if (AppearanceList.ItemContainerGenerator.ContainerFromItem(option) is not FrameworkElement container)
+        var window = Window.GetWindow(this);
+        Point screenPoint;
+
+        // 鼠标点击时以真实光标位置为圆心，这样扩散一定从用户按下的色块开始；
+        // 键盘切换或鼠标不在窗口上时，回退到胶囊中心。
+        if (window is not null && IsMouseOver)
+        {
+            screenPoint = window.PointToScreen(Mouse.GetPosition(window));
+        }
+        else if (AppearanceList.ItemContainerGenerator.ContainerFromItem(option) is FrameworkElement container)
+        {
+            var center = container.TranslatePoint(
+                new Point(container.ActualWidth / 2, container.ActualHeight / 2),
+                this);
+            screenPoint = PointToScreen(center);
+        }
+        else
         {
             return;
         }
 
-        var center = container.TranslatePoint(
-            new Point(container.ActualWidth / 2, container.ActualHeight / 2),
-            this);
-        var screenPoint = PointToScreen(center);
         var reverse = option.Value == _previousTheme;
-
-        if (Application.Current is App app)
+        _inThemeChange = true;
+        try
         {
-            app.PreviewTheme(option.Value, screenPoint, reverse);
+            _viewModel!.Theme = option.Value;
+
+            if (Application.Current is App app)
+            {
+                app.PreviewTheme(option.Value, screenPoint, reverse);
+            }
+
+            // 先让圆形动画播完，再保存；保存会重新 Apply 主题，太早会打断遮罩。
+            _themeSaveTimer.Stop();
+            _themeSaveTimer.Start();
+        }
+        finally
+        {
+            _inThemeChange = false;
         }
 
         _previousTheme = _currentTheme;

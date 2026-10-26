@@ -30,7 +30,7 @@
         <!-- 右侧标题下的类型/连接/状态小标签 -->
         <Style x:Key="ChipBorder" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
-            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="CornerRadius" Value="12" />
             <Setter Property="Padding" Value="8,3" />
             <Setter Property="Margin" Value="0,0,6,0" />
         </Style>
@@ -47,7 +47,7 @@
         <Style x:Key="DeviceNumberBadge" TargetType="Border">
             <Setter Property="Width" Value="24" />
             <Setter Property="Height" Value="24" />
-            <Setter Property="CornerRadius" Value="7" />
+            <Setter Property="CornerRadius" Value="12" />
             <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
@@ -57,14 +57,13 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
         </Grid.RowDefinitions>
 
         <!-- ===== 自绘标题栏：设置/最小化/关闭，无全屏按钮 ===== -->
         <Border Grid.Row="0" Background="{DynamicResource TitleBarGradientBrush}">
             <Grid Margin="18,0,10,0">
                 <StackPanel x:Name="BrandRow" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="28" Height="28" CornerRadius="8" Background="#33FFFFFF">
+                    <Border Width="28" Height="28" CornerRadius="12" Background="#33FFFFFF">
                         <TextBlock Text="V" Foreground="White" FontSize="15" FontWeight="Bold"
                                    HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
@@ -111,7 +110,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- 左侧主导航：设备 / 设置 / 关于，设置不再弹出独立窗口 -->
-            <Border Grid.Column="0" CornerRadius="14" Padding="10,12,10,10"
+            <Border Grid.Column="0" CornerRadius="12" Padding="10,12,10,10"
                     Background="{DynamicResource SurfaceBrush}"
                     BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
                 <Grid>
@@ -139,7 +138,7 @@
                                   Data="M3,4 H21 V16 H3 Z M8,20 H16 M12,16 V20" />
                             <TextBlock Grid.Column="1" Text="{DynamicResource Devices}" FontSize="13"
                                        FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center" />
-                            <Border Grid.Column="2" MinWidth="22" Height="22" CornerRadius="11"
+                            <Border Grid.Column="2" MinWidth="22" Height="22" CornerRadius="12"
                                     Background="{DynamicResource AccentBrush}" Padding="6,0"
                                     Visibility="{Binding HasDevices, Converter={StaticResource BoolToVis}}">
                                 <TextBlock Text="{Binding DeviceBadgeText}" Foreground="White"
@@ -215,7 +214,7 @@
                     <StackPanel x:Name="BannerHost" Grid.Row="0">
                 <Border Background="{DynamicResource BannerWarningBackgroundBrush}"
                         BorderBrush="{DynamicResource BannerWarningBorderBrush}"
-                        BorderThickness="1" CornerRadius="10" Padding="12,8" Margin="0,0,0,10"
+                        BorderThickness="1" CornerRadius="12" Padding="12,8" Margin="0,0,0,10"
                         Visibility="{Binding HasLowBattery, Converter={StaticResource BoolToVis}}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE7BA;" FontFamily="{DynamicResource IconFontFamily}" FontSize="14"
@@ -227,10 +226,10 @@
 
                 <Border Background="{DynamicResource BannerInfoBackgroundBrush}"
                         BorderBrush="{DynamicResource BannerInfoBorderBrush}"
-                        BorderThickness="1" CornerRadius="10" Padding="12,8" Margin="0,0,0,10"
+                        BorderThickness="1" CornerRadius="12" Padding="12,8" Margin="0,0,0,10"
                         Visibility="{Binding IsDemo, Converter={StaticResource BoolToVis}}">
                     <StackPanel Orientation="Horizontal">
-                        <Border Background="{DynamicResource AccentBrush}" CornerRadius="4"
+                        <Border Background="{DynamicResource AccentBrush}" CornerRadius="12"
                                 Padding="6,2" VerticalAlignment="Center">
                             <TextBlock Text="{DynamicResource DemoBadge}" Foreground="White"
                                        FontSize="10" FontWeight="SemiBold" />
@@ -340,7 +339,7 @@
                         </Grid>
 
                         <Border Grid.Row="2" Background="{DynamicResource SurfaceAltBrush}"
-                                CornerRadius="8" Padding="10,7" Margin="0,10,0,0">
+                                CornerRadius="12" Padding="10,7" Margin="0,10,0,0">
                             <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource TinyTextStyle}"
                                        TextTrimming="CharacterEllipsis" />
                         </Border>
@@ -579,34 +578,27 @@
                           VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
                 <Border Style="{StaticResource CardBorderStyle}" Padding="30,28" Margin="0,0,4,4">
                     <StackPanel MaxWidth="620" HorizontalAlignment="Left">
-                        <Border Width="54" Height="54" CornerRadius="15" Background="{DynamicResource AccentBrush}"
+                        <Border Width="54" Height="54" CornerRadius="12" Background="{DynamicResource AccentBrush}"
                                 HorizontalAlignment="Left">
                             <TextBlock Text="V" Foreground="White" FontSize="26" FontWeight="Bold"
                                        HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <TextBlock Text="{DynamicResource AppName}" FontSize="24" FontWeight="SemiBold" Margin="0,16,0,0" />
                         <TextBlock Text="{DynamicResource AppVersion}" Style="{StaticResource SubtleTextStyle}" Margin="0,4,0,0" />
+                        <TextBlock Text="{Binding LastUpdatedText}" Style="{StaticResource TinyTextStyle}" Margin="0,6,0,0" />
                         <TextBlock Text="{DynamicResource AboutDescription}" FontSize="13" TextWrapping="Wrap"
                                    LineHeight="22" Margin="0,18,0,0" />
-                        <Border Background="{DynamicResource AccentSoftBrush}" CornerRadius="10"
+                        <Border Background="{DynamicResource AccentSoftBrush}" CornerRadius="12"
                                 Padding="14,12" Margin="0,20,0,0">
                             <TextBlock Text="{DynamicResource AboutPrivacy}" FontSize="12"
                                        TextWrapping="Wrap" LineHeight="20" />
                         </Border>
+                        <TextBlock Text="{DynamicResource FooterPhase}" Style="{StaticResource TinyTextStyle}"
+                                   TextWrapping="Wrap" Margin="2,14,0,0" />
                     </StackPanel>
                 </Border>
             </ScrollViewer>
         </Grid>
     </Grid>
-
-        <!-- ===== 底部状态栏 ===== -->
-        <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0">
-            <Grid Margin="18,0">
-                <TextBlock Text="{Binding LastUpdatedText}" Style="{StaticResource TinyTextStyle}"
-                           VerticalAlignment="Center" />
-                <TextBlock Text="{DynamicResource FooterPhase}" Style="{StaticResource TinyTextStyle}"
-                           HorizontalAlignment="Right" VerticalAlignment="Center" />
-            </Grid>
-        </Border>
     </Grid>
 </Window>

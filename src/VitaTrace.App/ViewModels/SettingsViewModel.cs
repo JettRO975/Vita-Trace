@@ -72,8 +72,7 @@ public sealed class SettingsViewModel : ObservableObject
         };
 
         SaveCommand = new RelayCommand(Save);
-        CancelCommand = new RelayCommand(() => CloseRequested?.Invoke(this, EventArgs.Empty));
-        OpenLogCommand = new RelayCommand(() => AppPaths.OpenInExplorer(AppPaths.LogDirectory));
+        CancelCommand = new RelayCommand(() => CloseRequested?.Invoke(this, EventArgs.Empty));        OpenLogCommand = new RelayCommand(() => AppPaths.OpenInExplorer(AppPaths.LogDirectory));
         OpenDataCommand = new RelayCommand(() => AppPaths.OpenInExplorer(AppPaths.Root));
     }
 
@@ -170,26 +169,30 @@ public sealed class SettingsViewModel : ObservableObject
         return brush;
     }
 
-    private void Save()
+    /// <summary>
+    /// 自动保存：每次修改后由设置页调用。校验失败时只显示错误并保留上一次成功值，
+    /// 不回滚输入，让用户可以继续修正。
+    /// </summary>
+    public bool AutoSave()
     {
         ErrorMessage = null;
 
         if (RefreshSeconds is < 15 or > 3600)
         {
             ErrorMessage = _l10n["ValidationRefresh"];
-            return;
+            return false;
         }
 
         if (LowBatteryThreshold is < 5 or > 50)
         {
             ErrorMessage = _l10n["ValidationThreshold"];
-            return;
+            return false;
         }
 
         if (HistoryRetentionDays is < 7 or > 365)
         {
             ErrorMessage = _l10n["ValidationHistory"];
-            return;
+            return false;
         }
 
         _draft.Theme = Theme;
@@ -206,10 +209,13 @@ public sealed class SettingsViewModel : ObservableObject
         if (!result.Success)
         {
             ErrorMessage = _l10n.Format("SaveFailed", result.Error ?? string.Empty);
-            return;
+            return false;
         }
 
         Saved?.Invoke(this, EventArgs.Empty);
-        CloseRequested?.Invoke(this, EventArgs.Empty);
+        return true;
     }
+
+    // 保留命令给可能的键盘快捷入口；页面不再显示独立保存按钮。
+    private void Save() => AutoSave();
 }

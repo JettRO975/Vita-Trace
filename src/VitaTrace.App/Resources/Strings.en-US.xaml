@@ -92,6 +92,7 @@
     <sys:String x:Key="LogHint">Attach the log when reporting compatibility issues. It contains no personal data.</sys:String>
 
     <sys:String x:Key="SaveFailed">Save failed: {0}</sys:String>
+    <sys:String x:Key="AutoSaveHint">Changes are saved automatically</sys:String>
     <sys:String x:Key="LoadFailed">Could not load settings; defaults are in use: {0}</sys:String>
     <sys:String x:Key="SettingsSaved">Settings saved</sys:String>
     <sys:String x:Key="ValidationRefresh">Refresh interval must be between 15 and 3600 seconds.</sys:String>

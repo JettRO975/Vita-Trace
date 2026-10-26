@@ -146,7 +146,8 @@ public static class ThemeTransition
 
             overlay.OpacityMask = mask;
 
-            var duration = TimeSpan.FromMilliseconds(reverse ? 340 : 460);
+            // 用户反馈原先 460ms 太快；放慢到接近系统“流畅”过渡的节奏。
+            var duration = TimeSpan.FromMilliseconds(reverse ? 700 : 900);
             var animation = new DoubleAnimation(
                 reverse ? MaxRadius : 0.1,
                 reverse ? 0.1 : MaxRadius,

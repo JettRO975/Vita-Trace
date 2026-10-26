@@ -92,6 +92,7 @@
     <sys:String x:Key="LogHint">设备兼容性问题请附上日志；日志不包含个人数据。</sys:String>
 
     <sys:String x:Key="SaveFailed">保存失败：{0}</sys:String>
+    <sys:String x:Key="AutoSaveHint">修改会自动保存</sys:String>
     <sys:String x:Key="LoadFailed">读取设置失败，已使用默认值：{0}</sys:String>
     <sys:String x:Key="SettingsSaved">设置已保存</sys:String>
     <sys:String x:Key="ValidationRefresh">刷新间隔需在 15–3600 秒之间。</sys:String>
