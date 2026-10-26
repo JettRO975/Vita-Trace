@@ -38,6 +38,10 @@ data/
 *.lnk
 *.vbs
 
+# 本机发行/验收辅助文件：保留在本地，不入库
+packaging/
+tests/acceptance/
+
 # 系统杂项
 Thumbs.db
 Desktop.ini
