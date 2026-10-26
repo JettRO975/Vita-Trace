@@ -79,13 +79,20 @@ public static class MorphIconAnimator
 
     private static void Bounce(Path icon)
     {
-        icon.RenderTransformOrigin = new Point(0.5, 0.5);
+        // 用元素实际尺寸作为中心。RenderTransformOrigin 叠加固定中心时，
+        // 父级布局/边距会让旋转中心偏到右下角。
+        var width = icon.ActualWidth > 0 ? icon.ActualWidth : 16;
+        var height = icon.ActualHeight > 0 ? icon.ActualHeight : 16;
+        icon.RenderTransformOrigin = new Point(0, 0);
 
         if (icon.RenderTransform is not ScaleTransform scale)
         {
-            scale = new ScaleTransform(1, 1);
+            scale = new ScaleTransform(1, 1, width / 2, height / 2);
             icon.RenderTransform = scale;
         }
+
+        scale.CenterX = width / 2;
+        scale.CenterY = height / 2;
 
         var duration = TimeSpan.FromMilliseconds(360);
         var animation = new DoubleAnimationUsingKeyFrames
@@ -108,6 +115,8 @@ public static class MorphIconAnimator
 
     private static void SpinOnce(Path icon)
     {
+        var width = icon.ActualWidth > 0 ? icon.ActualWidth : 16;
+        var height = icon.ActualHeight > 0 ? icon.ActualHeight : 16;
         var transform = icon.RenderTransform as TransformGroup;
         if (transform is null)
         {
@@ -117,16 +126,21 @@ public static class MorphIconAnimator
                 transform.Children.Add(icon.RenderTransform);
             }
 
-            transform.Children.Add(new RotateTransform(0, 8, 8));
+            transform.Children.Add(new RotateTransform(0, width / 2, height / 2));
             icon.RenderTransform = transform;
-            icon.RenderTransformOrigin = new Point(0.5, 0.5);
+            icon.RenderTransformOrigin = new Point(0, 0);
         }
 
         var rotate = transform.Children.OfType<RotateTransform>().FirstOrDefault();
         if (rotate is null)
         {
-            rotate = new RotateTransform(0, 8, 8);
+            rotate = new RotateTransform(0, width / 2, height / 2);
             transform.Children.Add(rotate);
+        }
+        else
+        {
+            rotate.CenterX = width / 2;
+            rotate.CenterY = height / 2;
         }
 
         var animation = new DoubleAnimation(0, 360, TimeSpan.FromMilliseconds(520))
