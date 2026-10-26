@@ -10,14 +10,14 @@ namespace VitaTrace.App.Services;
 /// 主题切换的圆形扩散/收缩过渡。
 ///
 /// 做法：切换前把当前窗口内容截成一张静态图，盖在真实内容上方；
-/// 真实内容先切到新主题，再让遮罩上的“洞”从点击位置扩散（或反向收缩），
+/// 真实内容先切到新主题，再让遮罩上的“洞”从点击位置向外扩散，
 /// 露出下面的新主题。这样过渡只发生在 WPF 视觉层，不阻塞 UI 线程。
 /// </summary>
 public static class ThemeTransition
 {
     private static readonly Dictionary<Window, ActiveOverlay> Active = new();
 
-    public static void Play(IReadOnlyList<Window> windows, Point screenOrigin, Action applyTheme, bool reverse)
+    public static void Play(IReadOnlyList<Window> windows, Point screenOrigin, Action applyTheme)
     {
         var snapshots = new List<Snapshot>();
         foreach (var window in windows)
@@ -40,7 +40,7 @@ public static class ThemeTransition
 
         foreach (var snapshot in snapshots)
         {
-            snapshot.Show(reverse);
+            snapshot.Show();
         }
     }
 
@@ -83,7 +83,7 @@ public static class ThemeTransition
             return new Snapshot(window, host, bitmap, origin, maxRadius + 8);
         }
 
-        public void Show(bool reverse)
+        public void Show()
         {
             if (Active.TryGetValue(Window, out var prior))
             {
@@ -118,39 +118,28 @@ public static class ThemeTransition
             Host.Children.Add(overlay);
 
             // 用径向渐变透明度遮罩：中心透明 => 露出下面的新主题；
-            // 外圈不透明 => 旧主题仍然覆盖。反向时把两个颜色对调。
+            // 外圈不透明 => 旧主题仍然覆盖；中心透明处露出新主题。
             var mask = new RadialGradientBrush
             {
                 MappingMode = BrushMappingMode.Absolute,
                 Center = Origin,
                 GradientOrigin = Origin,
-                RadiusX = reverse ? MaxRadius : 0.1,
-                RadiusY = reverse ? MaxRadius : 0.1
+                RadiusX = 0.1,
+                RadiusY = 0.1
             };
 
-            if (reverse)
-            {
-                // 反向：旧主题留在中心并逐步收缩，外圈已经露出新主题；
-                // 中间 15% 做软过渡，避免出现生硬的圆形边界。
-                mask.GradientStops.Add(new GradientStop(Colors.Black, 0));
-                mask.GradientStops.Add(new GradientStop(Colors.Black, 0.85));
-                mask.GradientStops.Add(new GradientStop(Colors.Transparent, 1));
-            }
-            else
-            {
-                // 正向：洞的中心先透明，边缘留 15% 羽化，扩散时不会像硬边圆片。
-                mask.GradientStops.Add(new GradientStop(Colors.Transparent, 0));
-                mask.GradientStops.Add(new GradientStop(Colors.Transparent, 0.85));
-                mask.GradientStops.Add(new GradientStop(Colors.Black, 1));
-            }
+            // 正向：洞的中心先透明，边缘留 15% 羽化，扩散时不会像硬边圆片。
+            mask.GradientStops.Add(new GradientStop(Colors.Transparent, 0));
+            mask.GradientStops.Add(new GradientStop(Colors.Transparent, 0.85));
+            mask.GradientStops.Add(new GradientStop(Colors.Black, 1));
 
             overlay.OpacityMask = mask;
 
-            // 用户反馈原先 460ms 太快；放慢到接近系统“流畅”过渡的节奏。
-            var duration = TimeSpan.FromMilliseconds(reverse ? 700 : 900);
+            // 正向 900ms；不再提供反向收缩，切换回去也从点击位置向外扩散。
+            var duration = TimeSpan.FromMilliseconds(900);
             var animation = new DoubleAnimation(
-                reverse ? MaxRadius : 0.1,
-                reverse ? 0.1 : MaxRadius,
+                0.1,
+                MaxRadius,
                 new Duration(duration))
             {
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut },

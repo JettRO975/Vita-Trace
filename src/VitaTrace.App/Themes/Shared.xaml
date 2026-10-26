@@ -362,9 +362,10 @@
         </Setter>
     </Style>
 
-    <!-- 开关：350ms 弹性滑动，滑块横向拉伸后回弹，轨道灰→绿。 -->
+    <!-- 果冻开关：350ms 弹性滑动，滑块横向拉伸后回弹，轨道灰→绿。 -->
     <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
@@ -373,11 +374,11 @@
                                 Width="44" Height="24"
                                 CornerRadius="12"
                                 ClipToBounds="True"
+                                Background="#D9DEE8"
                                 BorderBrush="{DynamicResource BorderBrush}"
                                 BorderThickness="1">
                             <Grid>
-                                <Border x:Name="TrackOff" Background="{DynamicResource SurfaceAltBrush}" />
-                                <Border x:Name="TrackOn" Background="{DynamicResource SuccessBrush}" Opacity="0" />
+                                <Border x:Name="TrackOn" Background="#2FBF71" Opacity="0" />
                                 <Border x:Name="Thumb"
                                         Width="18" Height="18"
                                         CornerRadius="9"
@@ -386,7 +387,8 @@
                                         VerticalAlignment="Center"
                                         Background="White">
                                     <Border.RenderTransform>
-                                        <TranslateTransform x:Name="ThumbTranslate" X="0" />
+                                        <ScaleTransform x:Name="ThumbScale" ScaleX="1" ScaleY="1"
+                                                        CenterX="9" CenterY="9" />
                                     </Border.RenderTransform>
                                 </Border>
                             </Grid>
@@ -395,28 +397,30 @@
                     </StackPanel>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="TrackOn" Property="Opacity" Value="1" />
+                            <Setter TargetName="Thumb" Property="Margin" Value="23,0,0,0" />
                             <Trigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="TrackOn"
                                                          Storyboard.TargetProperty="Opacity"
-                                                         To="1" Duration="0:0:0.35" />
-                                        <DoubleAnimation Storyboard.TargetName="ThumbTranslate"
-                                                         Storyboard.TargetProperty="X"
-                                                         To="20" Duration="0:0:0.35">
-                                            <DoubleAnimation.EasingFunction>
+                                                         From="0" To="1" Duration="0:0:0.35" />
+                                        <ThicknessAnimation Storyboard.TargetName="Thumb"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            From="3,0,0,0" To="23,0,0,0" Duration="0:0:0.35">
+                                            <ThicknessAnimation.EasingFunction>
                                                 <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
-                                            </DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Thumb"
-                                                                       Storyboard.TargetProperty="Width">
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0" Value="18" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="24">
+                                            </ThicknessAnimation.EasingFunction>
+                                        </ThicknessAnimation>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ThumbScale"
+                                                                       Storyboard.TargetProperty="ScaleX">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0" Value="1" />
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="1.35">
                                                 <EasingDoubleKeyFrame.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut" />
                                                 </EasingDoubleKeyFrame.EasingFunction>
                                             </EasingDoubleKeyFrame>
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="18">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="1">
                                                 <EasingDoubleKeyFrame.EasingFunction>
                                                     <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
                                                 </EasingDoubleKeyFrame.EasingFunction>
@@ -430,23 +434,23 @@
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="TrackOn"
                                                          Storyboard.TargetProperty="Opacity"
-                                                         To="0" Duration="0:0:0.35" />
-                                        <DoubleAnimation Storyboard.TargetName="ThumbTranslate"
-                                                         Storyboard.TargetProperty="X"
-                                                         To="0" Duration="0:0:0.35">
-                                            <DoubleAnimation.EasingFunction>
+                                                         From="1" To="0" Duration="0:0:0.35" />
+                                        <ThicknessAnimation Storyboard.TargetName="Thumb"
+                                                            Storyboard.TargetProperty="Margin"
+                                                            From="23,0,0,0" To="3,0,0,0" Duration="0:0:0.35">
+                                            <ThicknessAnimation.EasingFunction>
                                                 <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
-                                            </DoubleAnimation.EasingFunction>
-                                        </DoubleAnimation>
-                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Thumb"
-                                                                       Storyboard.TargetProperty="Width">
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0" Value="18" />
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="24">
+                                            </ThicknessAnimation.EasingFunction>
+                                        </ThicknessAnimation>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ThumbScale"
+                                                                       Storyboard.TargetProperty="ScaleX">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0" Value="1" />
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.12" Value="1.35">
                                                 <EasingDoubleKeyFrame.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut" />
                                                 </EasingDoubleKeyFrame.EasingFunction>
                                             </EasingDoubleKeyFrame>
-                                            <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="18">
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.35" Value="1">
                                                 <EasingDoubleKeyFrame.EasingFunction>
                                                     <ElasticEase EasingMode="EaseOut" Oscillations="2" Springiness="4" />
                                                 </EasingDoubleKeyFrame.EasingFunction>

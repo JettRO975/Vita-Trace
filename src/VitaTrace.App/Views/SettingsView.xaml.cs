@@ -31,7 +31,6 @@ public partial class SettingsView : UserControl
     private bool _ready;
     private bool _inThemeChange;
     private string _currentTheme = "sea";
-    private string _previousTheme = "sea";
     private readonly DispatcherTimer _themeSaveTimer;
 
     public SettingsView()
@@ -60,7 +59,6 @@ public partial class SettingsView : UserControl
         HookViewModel();
 
         _currentTheme = viewModel.Theme;
-        _previousTheme = _currentTheme;
         _ready = true;
     }
 
@@ -118,8 +116,7 @@ public partial class SettingsView : UserControl
     }
 
     /// <summary>
-    /// 点击外观胶囊时立即预览；点回上一次选中的外观时圆形遮罩收缩，
-    /// 其余情况从点击位置向外扩散。
+    /// 点击外观胶囊时立即预览：无论切到哪种外观，都从点击位置向外扩散。
     /// </summary>
     private void AppearanceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -151,7 +148,6 @@ public partial class SettingsView : UserControl
             return;
         }
 
-        var reverse = option.Value == _previousTheme;
         _inThemeChange = true;
         try
         {
@@ -159,7 +155,7 @@ public partial class SettingsView : UserControl
 
             if (Application.Current is App app)
             {
-                app.PreviewTheme(option.Value, screenPoint, reverse);
+                app.PreviewTheme(option.Value, screenPoint);
             }
 
             // 先让圆形动画播完，再保存；保存会重新 Apply 主题，太早会打断遮罩。
@@ -171,7 +167,6 @@ public partial class SettingsView : UserControl
             _inThemeChange = false;
         }
 
-        _previousTheme = _currentTheme;
         _currentTheme = option.Value;
     }
 

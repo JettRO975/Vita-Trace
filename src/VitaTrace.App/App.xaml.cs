@@ -87,10 +87,10 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// 设置页点击外观时调用。先截图，再切资源，最后用圆形遮罩做扩散/收缩。
+    /// 设置页点击外观时调用。先截图，再切资源，最后用圆形遮罩从点击位置扩散。
     /// 过渡失败时自动退回立即切换，不影响功能。
     /// </summary>
-    public void PreviewTheme(string preference, Point screenOrigin, bool reverse)
+    public void PreviewTheme(string preference, Point screenOrigin)
     {
         var windows = new List<Window>();
         foreach (Window window in Windows)
@@ -109,7 +109,7 @@ public partial class App : Application
 
         try
         {
-            ThemeTransition.Play(windows, screenOrigin, () => ApplyThemeNow(preference), reverse);
+            ThemeTransition.Play(windows, screenOrigin, () => ApplyThemeNow(preference));
         }
         catch (Exception ex)
         {
