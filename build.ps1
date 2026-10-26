@@ -38,16 +38,10 @@ if ($Publish) {
 
     # 不压缩单文件：压缩会在启动时把程序集解压到内存，实测常驻内存
     # 比未压缩版本高约 100 MB；用体积换内存，桌面工具更合适。
-    & $dotnet publish $project `
-        -c $Configuration `
-        -r win-x64 `
-        --self-contained true `
-        -o $output `
-        -m:1 `
-        -p:UseSharedCompilation=false `
-        -p:PublishSingleFile=true `
-        -p:IncludeNativeLibrariesForSelfExtract=true `
-        -p:EnableCompressionInSingleFile=false
+    # 单行传参：Windows PowerShell 5.1 对数组/续行解析不稳定，保持最简单形式。
+    Write-Host 'publish start'
+    & $dotnet publish $project -c $Configuration -r win-x64 --self-contained true -o $output -m:1 -p:UseSharedCompilation=false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=false
+    Write-Host "publish exit: $LASTEXITCODE"
 
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
