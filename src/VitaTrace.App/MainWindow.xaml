@@ -183,9 +183,6 @@
                                        FontWeight="SemiBold" Margin="8,0,0,0" VerticalAlignment="Center" />
                         </Grid>
                     </RadioButton>
-
-                    <TextBlock Grid.Row="4" Text="{DynamicResource AppVersion}" Style="{StaticResource TinyTextStyle}"
-                               TextWrapping="Wrap" Margin="8,12,8,2" />
                 </Grid>
             </Border>
 
