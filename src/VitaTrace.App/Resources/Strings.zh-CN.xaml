@@ -167,7 +167,7 @@
     <sys:String x:Key="Restore">还原</sys:String>
     <sys:String x:Key="CloseWindow">关闭</sys:String>
     <sys:String x:Key="RefreshTooltip">立即刷新（F5）</sys:String>
-    <sys:String x:Key="AppVersion">版本 1.0.0 · 正式版</sys:String>
+    <sys:String x:Key="AppVersion">版本 1.1.0 · 正式版</sys:String>
     <sys:String x:Key="FooterPhase">数据不会上传；电量与历史保存在本机，异常写入日志。</sys:String>
     <sys:String x:Key="ReceiverConnected">接收器已连接</sys:String>
     <sys:String x:Key="PairedDeviceUnknown">配对外设未知</sys:String>

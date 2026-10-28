@@ -167,7 +167,7 @@
     <sys:String x:Key="Restore">Restore</sys:String>
     <sys:String x:Key="CloseWindow">Close</sys:String>
     <sys:String x:Key="RefreshTooltip">Refresh now (F5)</sys:String>
-    <sys:String x:Key="AppVersion">Version 1.0.0 · Release</sys:String>
+    <sys:String x:Key="AppVersion">Version 1.1.0 · Release</sys:String>
     <sys:String x:Key="FooterPhase">Nothing is uploaded; readings and history stay on this PC, errors go to the log.</sys:String>
     <sys:String x:Key="ReceiverConnected">Receiver connected</sys:String>
     <sys:String x:Key="PairedDeviceUnknown">Paired device unknown</sys:String>
