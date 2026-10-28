@@ -237,6 +237,13 @@ public partial class App : Application
 
         // 开发用只读探针：不建窗口、不写设置，只把 HID 接口和厂商查询结果写日志。
         // 正式用户不会带 --probe，因此不会看到这个模式。
+        if (args.Any(a => string.Equals(a, "--selftest", StringComparison.OrdinalIgnoreCase)))
+        {
+            var ok = ProtocolSelfTest.Run(Logger);
+            Shutdown(ok ? 0 : 1);
+            return;
+        }
+
         if (args.Any(a => string.Equals(a, "--probe", StringComparison.OrdinalIgnoreCase)))
         {
             RunProbe();
@@ -331,6 +338,8 @@ public partial class App : Application
             {
                 ("Rapoo", device => ProbeReaderAsync(new RapooBatteryReader(Logger), device)),
                 ("MCHOSE-Keyboard", device => ProbeReaderAsync(new MchoseKeyboardBatteryReader(Logger), device)),
+                ("CompX17", device => new Compx17BatteryReader(Logger).ProbeAsync(device)),
+                ("Nordic54", device => new Nordic54BatteryReader(Logger).ProbeAsync(device)),
                 ("CompX", device => new CompxBatteryReader(Logger).ProbeAsync(device)),
                 ("MCHOSE", device => new MchoseBatteryReader(Logger).ProbeAsync(device))
             };
@@ -491,6 +500,8 @@ public partial class App : Application
                 new WindowsPnpBatteryReader(),
                 new RapooBatteryReader(Logger),
                 new MchoseKeyboardBatteryReader(Logger),
+                new Compx17BatteryReader(Logger),
+                new Nordic54BatteryReader(Logger),
                 new CompxBatteryReader(Logger),
                 new MchoseBatteryReader(Logger)
             },

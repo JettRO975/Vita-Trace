@@ -319,17 +319,34 @@ public sealed class WindowsHidDeviceEnumerator : IDeviceEnumerator
                 i.UsagePage == 0xFF02 && i.Usage == 0x0002 && i.OutputReportLength >= 20);
             var isMchoseKeyboardDongle = primary.VendorId == 0x258A && wirelessControl is not null;
 
+            // ATK/VXE 的 2.4G 接收器常暴露名称为 “USB Receiver” 的 HID 集合，
+            // 本身没有电池，但在 FF02:0002（17 字节）或 FF05:0002（64 字节）
+            // 上能查询鼠标电量。这里不把它作为“未知接收器”，而是作为
+            // “通过接收器连接的鼠标”展示；协议读取器会再按接口指纹确认。
+            var compxWireless = group.FirstOrDefault(i =>
+                i.UsagePage == 0xFF02 && i.Usage == 0x0002 &&
+                i.InputReportLength >= 17 && i.OutputReportLength >= 17);
+            var nordicWireless = group.FirstOrDefault(i =>
+                i.UsagePage == 0xFF05 && i.Usage == 0x0002 &&
+                i.InputReportLength >= 64 && i.OutputReportLength >= 64);
+            var isAtkMouseDongle = (isReceiver || primary.Connection == ConnectionKind.UsbReceiver) &&
+                                   (primary.VendorId is 0x373B or 0x3554) &&
+                                   (compxWireless is not null || nordicWireless is not null) &&
+                                   ClassifyKind(group) != DeviceKind.Keyboard;
+
             var kind = isMchoseKeyboardDongle
                 ? DeviceKind.Keyboard
-                : isReceiver
-                    ? DeviceKind.Receiver
-                    : ClassifyKind(group);
+                : isAtkMouseDongle
+                    ? DeviceKind.Mouse
+                    : isReceiver
+                        ? DeviceKind.Receiver
+                        : ClassifyKind(group);
 
-            var connection = isReceiver || isRapooBatteryDongle || isMchoseKeyboardDongle
+            var connection = isReceiver || isRapooBatteryDongle || isMchoseKeyboardDongle || isAtkMouseDongle
                 ? ConnectionKind.UsbReceiver
                 : primary.Connection;
 
-            var batteryStatus = isMchoseKeyboardDongle
+            var batteryStatus = isMchoseKeyboardDongle || isAtkMouseDongle
                 ? BatteryStatus.Unknown
                 : isReceiver || (!isRapooBatteryDongle && connection == ConnectionKind.Wired)
                     ? BatteryStatus.Wired
@@ -342,22 +359,24 @@ public sealed class WindowsHidDeviceEnumerator : IDeviceEnumerator
                 : null;
             var displayName = isMchoseKeyboardDongle
                 ? "SINOWEALTH 2.4G 键盘"
-                : isReceiver
-                    ? FirstNonEmpty(
-                        receiverInterface?.DisplayName,
-                        string.IsNullOrWhiteSpace(primary.Manufacturer)
-                            ? null
-                            : $"{primary.Manufacturer} USB 接收器",
-                        "USB 接收器")
-                    : primary.DisplayName;
+                : isAtkMouseDongle
+                    ? $"{FirstNonEmpty(primary.Manufacturer, "ATK/VXE")} 2.4G 鼠标"
+                    : isReceiver
+                        ? FirstNonEmpty(
+                            receiverInterface?.DisplayName,
+                            string.IsNullOrWhiteSpace(primary.Manufacturer)
+                                ? null
+                                : $"{primary.Manufacturer} USB 接收器",
+                            "USB 接收器")
+                        : primary.DisplayName;
 
             devices.Add(new PeripheralDevice
             {
-                Id = (isReceiver ? "receiver:" : "hid:") + StableHash(primary.PhysicalId),
+                Id = (isReceiver && !isAtkMouseDongle ? "receiver:" : "hid:") + StableHash(primary.PhysicalId),
                 DisplayName = displayName,
-                Model = isReceiver || string.IsNullOrWhiteSpace(primary.Product) ? null : primary.Product,
+                Model = isReceiver || isAtkMouseDongle || string.IsNullOrWhiteSpace(primary.Product) ? null : primary.Product,
                 Manufacturer = string.IsNullOrWhiteSpace(primary.Manufacturer) ? null : primary.Manufacturer,
-                SerialNumber = isReceiver || string.IsNullOrWhiteSpace(primary.SerialNumber)
+                SerialNumber = isReceiver || isAtkMouseDongle || string.IsNullOrWhiteSpace(primary.SerialNumber)
                     ? null
                     : primary.SerialNumber,
                 VendorId = primary.VendorId == 0 ? null : primary.VendorId,
@@ -374,7 +393,7 @@ public sealed class WindowsHidDeviceEnumerator : IDeviceEnumerator
                 VendorStatusPath = group
                     .FirstOrDefault(i => i.UsagePage == 0xFF00 && i.Usage == 0x0002)
                     ?.Path,
-                WirelessControlPath = wirelessControl?.Path,
+                WirelessControlPath = compxWireless?.Path ?? nordicWireless?.Path ?? wirelessControl?.Path,
                 BatteryStatus = batteryStatus,
                 Battery = null,
                 IsDemo = false
