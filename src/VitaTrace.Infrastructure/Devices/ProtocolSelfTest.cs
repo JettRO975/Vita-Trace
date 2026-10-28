@@ -82,6 +82,46 @@ public static class ProtocolSelfTest
             npct == 50 && nmv == 0x0E94,
             $"pct={npct} mV={nmv}");
 
+        // Razer 90B：status=0x02、echo 正确、raw=0xC0 → 75%。
+        var razer = new byte[91];
+        razer[1] = 0x02;
+        razer[2] = 0x1F;
+        razer[6] = 0x02;
+        razer[7] = 0x07;
+        razer[10] = 0xC0;
+        Check(
+            "Razer 90B",
+            RazerBatteryReader.TryParseResponse(razer, out var rpct, out _) && rpct == 75,
+            $"pct={rpct}");
+
+        // raw=0 视为休眠，不显示 0%。
+        var razerSleep = (byte[])razer.Clone();
+        razerSleep[10] = 0;
+        Check(
+            "Razer 拒绝休眠 0",
+            !RazerBatteryReader.TryParseResponse(razerSleep, out _, out _),
+            "休眠 raw=0 被错误接受");
+
+        // 回显不匹配必须拒绝。
+        var razerBad = (byte[])razer.Clone();
+        razerBad[7] = 0x08;
+        Check(
+            "Razer 拒绝错误回显",
+            !RazerBatteryReader.TryParseResponse(razerBad, out _, out _),
+            "错误回显被接受");
+
+        // 查询帧长度、CRC 覆盖范围与尾部 0 必须正确。
+        var razerRequest = RazerBatteryReader.BuildRequest();
+        byte razerCrc = 0;
+        for (var i = 3; i <= 88; i++)
+        {
+            razerCrc ^= razerRequest[i];
+        }
+        Check(
+            "Razer 查询帧",
+            razerRequest.Length == 91 && razerRequest[89] == razerCrc && razerRequest[90] == 0,
+            $"len={razerRequest.Length} crc=0x{razerRequest[89]:X2} expect=0x{razerCrc:X2}");
+
         logger.Info($"SELFTEST 完成：{passed} passed, {failed} failed");
         return failed == 0;
     }

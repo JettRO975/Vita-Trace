@@ -120,6 +120,7 @@ public sealed class DeviceItemViewModel : ObservableObject
         BatterySource.CompxHid => _l10n["SourceCompxHid"],
         BatterySource.MchoseHid => _l10n["SourceMchoseHid"],
         BatterySource.RapooHid => _l10n["SourceRapooHid"],
+        BatterySource.RazerHid => _l10n["SourceRazerHid"],
         BatterySource.StandardHid => _l10n["SourceStandardHid"],
         BatterySource.Manual => _l10n["SourceManual"],
         _ => _l10n["SourceNone"]

@@ -98,6 +98,20 @@ internal static class HidRequestResponse
         return received;
     }
 
+    /// <summary>
+    /// 发送 Feature Report。雷蛇等设备的电量查询走 Feature Report，
+    /// 与 Output Report 是两个不同的 HID 通道，不能混用。
+    /// </summary>
+    internal static bool TrySetFeature(SafeFileHandle handle, byte[] report)
+        => HidNativeMethods.HidD_SetFeature(handle, report, report.Length);
+
+    /// <summary>
+    /// 读取 Feature Report。缓冲区长度必须与设备报告的 FeatureReportByteLength 一致；
+    /// 失败时返回 null，由调用方区分“休眠/不支持/接口错误”。
+    /// </summary>
+    internal static byte[]? TryGetFeature(SafeFileHandle handle, byte[] buffer)
+        => HidNativeMethods.HidD_GetFeature(handle, buffer, buffer.Length) ? buffer : null;
+
     /// <summary>从输入帧中去掉可选的 Report ID；只在长度足够时使用。</summary>
     internal static ReadOnlySpan<byte> StripReportId(ReadOnlySpan<byte> data, byte reportId)
         => data.Length > 0 && data[0] == reportId ? data[1..] : data;

@@ -341,7 +341,9 @@ public partial class App : Application
                 ("CompX17", device => new Compx17BatteryReader(Logger).ProbeAsync(device)),
                 ("Nordic54", device => new Nordic54BatteryReader(Logger).ProbeAsync(device)),
                 ("CompX", device => new CompxBatteryReader(Logger).ProbeAsync(device)),
-                ("MCHOSE", device => new MchoseBatteryReader(Logger).ProbeAsync(device))
+                ("MCHOSE", device => new MchoseBatteryReader(Logger).ProbeAsync(device)),
+                ("Razer-HID", device => new RazerBatteryReader(Logger).ProbeAsync(device)),
+                ("Standard-HID", device => new StandardHidBatteryReader(Logger).ProbeAsync(device))
             };
 
             foreach (var device in devices)
@@ -503,7 +505,9 @@ public partial class App : Application
                 new Compx17BatteryReader(Logger),
                 new Nordic54BatteryReader(Logger),
                 new CompxBatteryReader(Logger),
-                new MchoseBatteryReader(Logger)
+                new MchoseBatteryReader(Logger),
+                new RazerBatteryReader(Logger),
+                new StandardHidBatteryReader(Logger)
             },
             _historyStore,
             () => Settings,

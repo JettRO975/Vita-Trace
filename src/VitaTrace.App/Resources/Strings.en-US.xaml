@@ -124,6 +124,7 @@
     <sys:String x:Key="SourceCompxHid">CompX vendor protocol</sys:String>
     <sys:String x:Key="SourceMchoseHid">MCHOSE keyboard frame 0x13/0x4A</sys:String>
     <sys:String x:Key="SourceRapooHid">Rapoo 2.4G status frame</sys:String>
+    <sys:String x:Key="SourceRazerHid">Razer 90-byte Feature</sys:String>
     <sys:String x:Key="SourceStandardHid">Standard HID</sys:String>
     <sys:String x:Key="SourceManual">Manual</sys:String>
     <sys:String x:Key="SourceNone">—</sys:String>

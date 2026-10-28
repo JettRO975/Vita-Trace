@@ -66,6 +66,8 @@ public enum BatterySource
     MchoseHid,
     /// <summary>雷柏 2.4G 接收器主动推送的 FF00:0002 状态帧（只读，不发送命令）。</summary>
     RapooHid,
+    /// <summary>雷蛇 90 字节 Feature Report（class 0x02 / id 0x07）。</summary>
+    RazerHid,
     /// <summary>标准 HID Battery Strength（Usage Page 0x06 / Usage 0x20）。</summary>
     StandardHid,
     /// <summary>用户手动输入（未来的兜底功能，默认关闭）。</summary>
