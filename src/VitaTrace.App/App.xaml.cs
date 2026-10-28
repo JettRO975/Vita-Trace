@@ -48,6 +48,9 @@ public partial class App : Application
 
     public IAppLogger Logger => _logger;
 
+    /// <summary>当前实际写入的日志文件；设置页展示和“打开日志目录”都以此为准。</summary>
+    public string LogFilePath => _logger is FileLogger logger ? logger.LogFilePath : AppPaths.LogFile;
+
     public bool IsExiting => _isExiting;
 
     protected override void OnStartup(StartupEventArgs e)
@@ -127,10 +130,46 @@ public partial class App : Application
         }
 
         draft.Normalize();
+
+        // 日志目录是可修改的，先验证可写再保存设置；验证失败时不落盘、不切换，
+        // 避免配置文件指向一个每次写日志都会失败的位置。
+        FileLogger? fileLogger = _logger as FileLogger;
+        var previousLogFile = fileLogger?.LogFilePath;
+        if (!_isDemo && fileLogger is not null)
+        {
+            string targetLogFile;
+            try
+            {
+                targetLogFile = AppPaths.ResolveLogFile(draft.LogDirectory);
+            }
+            catch (Exception ex)
+            {
+                return SettingsSaveResult.Fail($"日志路径无效：{ex.Message}");
+            }
+
+            if (!TryValidateLogFile(targetLogFile, out var pathError))
+            {
+                return SettingsSaveResult.Fail($"日志目录不可写：{pathError}");
+            }
+
+            if (!string.Equals(targetLogFile, fileLogger.LogFilePath, StringComparison.OrdinalIgnoreCase) &&
+                !fileLogger.TrySwitchTo(targetLogFile, out var switchError))
+            {
+                return SettingsSaveResult.Fail($"切换日志文件失败：{switchError}");
+            }
+        }
+
         var saveResult = _settingsStore.Save(draft);
         if (!saveResult.Success)
         {
             Logger.Error($"保存设置失败：{saveResult.Error}");
+
+            // 设置没保存成功时把日志器切回原路径，避免“本次运行换了日志位置但下次启动又回去”。
+            if (!_isDemo && fileLogger is not null && previousLogFile is not null)
+            {
+                fileLogger.TrySwitchTo(previousLogFile, out _);
+            }
+
             return saveResult;
         }
 
@@ -159,6 +198,35 @@ public partial class App : Application
         UpdateTrayStatus();
         Logger.Info("设置已保存");
         return SettingsSaveResult.Ok();
+    }
+
+    /// <summary>在建日志之前先实际写一个临时文件，确认目录可创建、可写、可删除。</summary>
+    private static bool TryValidateLogFile(string fullPath, out string error)
+    {
+        try
+        {
+            var directory = Path.GetDirectoryName(fullPath);
+            if (string.IsNullOrWhiteSpace(directory))
+            {
+                error = "路径中没有有效的目录";
+                return false;
+            }
+
+            Directory.CreateDirectory(directory);
+            var probe = Path.Combine(directory, $".vitatrace-write-test-{Guid.NewGuid():N}.tmp");
+            using (File.Create(probe))
+            {
+            }
+
+            File.Delete(probe);
+            error = string.Empty;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            return false;
+        }
     }
 
     /// <summary>关闭窗口但保留托盘时的轻提示，只在本次运行第一次关闭时显示。</summary>
@@ -221,6 +289,24 @@ public partial class App : Application
 
         _settingsStore = new JsonSettingsStore(_isDemo ? AppPaths.DemoSettingsFile : AppPaths.SettingsFile);
         Settings = _settingsStore.Load();
+
+        // 真实模式允许用户把日志移到自定义目录；演示模式固定写 demo.log，避免污染真实日志。
+        if (!_isDemo && _logger is FileLogger fileLogger)
+        {
+            try
+            {
+                var configuredLogFile = AppPaths.ResolveLogFile(Settings.LogDirectory);
+                if (!string.Equals(configuredLogFile, fileLogger.LogFilePath, StringComparison.OrdinalIgnoreCase) &&
+                    !fileLogger.TrySwitchTo(configuredLogFile, out var logError))
+                {
+                    Logger.Warn($"自定义日志目录不可用，继续使用默认目录：{logError}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn($"自定义日志目录无效，继续使用默认目录：{ex.Message}");
+            }
+        }
 
         // 演示数据只用于 UI 验收，不能污染真实历史文件。
         _historyStore = _isDemo

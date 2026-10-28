@@ -125,7 +125,8 @@ public sealed class WindowsHidDeviceEnumerator : IDeviceEnumerator
         {
             _logger.Info(
                 $"  HID 接口 {info.DisplayName} | usage=0x{info.UsagePage:X4}/0x{info.Usage:X4} | " +
-                $"feature={info.FeatureReportLength} | {info.Path}");
+                $"in={info.InputReportLength} out={info.OutputReportLength} feature={info.FeatureReportLength} | " +
+                $"VID_{info.VendorId:X4} PID_{info.ProductId:X4} | {info.Path}");
         }
 
         var devices = BuildDevices(interfaces);
@@ -135,7 +136,11 @@ public sealed class WindowsHidDeviceEnumerator : IDeviceEnumerator
         {
             _logger.Info(
                 $"  {device.EffectiveName} | {device.Kind} | {device.Connection} | " +
-                $"VID_{device.VendorId:X4} PID_{device.ProductId:X4} | {device.DevicePath}");
+                $"VID_{device.VendorId:X4} PID_{device.ProductId:X4} | " +
+                $"interfaces={device.InterfacePaths.Count} | " +
+                $"status={(string.IsNullOrWhiteSpace(device.VendorStatusPath) ? "-" : "yes")} | " +
+                $"control={(string.IsNullOrWhiteSpace(device.WirelessControlPath) ? "-" : "yes")} | " +
+                $"{device.DevicePath}");
         }
 
         return devices;

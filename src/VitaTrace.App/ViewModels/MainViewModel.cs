@@ -387,6 +387,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     /// </summary>
     private async Task ReadBatteriesAsync(IReadOnlyList<PeripheralDevice> devices)
     {
+        _logger.Info($"电量读取开始：{devices.Count} 个设备");
+
         foreach (var device in devices)
         {
             if (!device.IsConnected ||
@@ -402,6 +404,13 @@ public sealed class MainViewModel : ObservableObject, IDisposable
                 continue;
             }
 
+            // 这组日志就是用户反馈兼容性问题时要附上的“协议现场”：
+            // VID/PID、接口路径、每个 reader 的尝试与结果，都在同一份 app.log 里。
+            _logger.Info(
+                $"  设备：{device.EffectiveName} | VID_{device.VendorId:X4} PID_{device.ProductId:X4} | " +
+                $"{device.Kind}/{device.Connection} | status={device.BatteryStatus} | " +
+                $"source={device.Battery?.Source.ToString() ?? "none"} | path={device.DevicePath}");
+
             foreach (var reader in _readers)
             {
                 if (!reader.CanHandle(device))
@@ -409,9 +418,15 @@ public sealed class MainViewModel : ObservableObject, IDisposable
                     continue;
                 }
 
+                _logger.Info($"    协议尝试：{reader.Id}");
+
                 try
                 {
                     var reading = await ReadWithTimeoutAsync(reader, device, TimeSpan.FromSeconds(6));
+                    _logger.Info(
+                        $"    协议结果：{reader.Id} -> {reading.Status} " +
+                        $"{(reading.Percent?.ToString() ?? "-")}% | source={reading.Source} | " +
+                        $"detail={reading.Detail ?? "-"} | {reading.UpdatedAt:O}");
 
                     // 本轮没读到、但 10 分钟内有过有效读数：保留旧值并标记 Stale。
                     // 不把旧值伪装成实时值，也不因为一次休眠就显示“读取失败”。
@@ -438,6 +453,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
                 }
             }
         }
+
+        _logger.Info("电量读取结束");
     }
 
     /// <summary>

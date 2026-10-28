@@ -4,8 +4,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Microsoft.Win32;
 using VitaTrace.App.Services;
 using VitaTrace.App.ViewModels;
+using VitaTrace.Infrastructure.Storage;
 
 namespace VitaTrace.App.Views;
 
@@ -180,5 +182,30 @@ public partial class SettingsView : UserControl
         }
 
         base.OnPreviewKeyDown(e);
+    }
+
+    /// <summary>
+    /// 修改日志目录。只移动日志文件，不移动设置/历史；选择后立即自动保存并切换 FileLogger。
+    /// </summary>
+    private void ChangeLogPath_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null)
+        {
+            return;
+        }
+
+        var dialog = new OpenFolderDialog
+        {
+            Title = TryFindResource("ChangeLogPathTitle") as string ?? "选择日志保存目录",
+            InitialDirectory = Path.GetDirectoryName(_viewModel.LogPath) ?? AppPaths.LogDirectory,
+            Multiselect = false
+        };
+
+        var owner = Window.GetWindow(this);
+        var accepted = owner is null ? dialog.ShowDialog() : dialog.ShowDialog(owner);
+        if (accepted == true)
+        {
+            _viewModel.ChangeLogDirectory(dialog.FolderName);
+        }
     }
 }

@@ -85,6 +85,8 @@
     <sys:String x:Key="AboutPrivacy">Device details, battery history and settings stay on this PC. Nothing is uploaded and administrator rights are not required.</sys:String>
     <sys:String x:Key="Version">Version</sys:String>
     <sys:String x:Key="LogFile">Log file</sys:String>
+    <sys:String x:Key="ChangeLogPath">Change log location</sys:String>
+    <sys:String x:Key="ChangeLogPathTitle">Choose log folder</sys:String>
     <sys:String x:Key="OpenLogFolder">Open log folder</sys:String>
     <sys:String x:Key="DataFolder">Data folder</sys:String>
     <sys:String x:Key="OpenDataFolder">Open data folder</sys:String>

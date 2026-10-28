@@ -96,12 +96,24 @@ VitaTrace-1.0.0-win-x64.zip
 ```text
 %LOCALAPPDATA%\VitaTrace\settings.json   设置
 %LOCALAPPDATA%\VitaTrace\history.json    电量历史
-%LOCALAPPDATA%\VitaTrace\logs\app.log    运行日志
+%LOCALAPPDATA%\VitaTrace\logs\app.log    运行日志（可在设置里改路径）
 ```
 
 - 不联网，不上传设备信息。
 - 不需要管理员权限；开机启动只写当前用户的启动项。
 - 删除 `%LOCALAPPDATA%\VitaTrace` 即可清空所有本地数据。
+
+---
+
+## 帮我新增设备
+
+日志里会记录设备名称、VID/PID、HID 接口（usage page、报告长度）、尝试过的读取协议和结果。拿到日志后，就能判断一款新设备该走哪条协议。
+
+1. 连接新设备，回到“设备”页点一次刷新，等 10 秒；
+2. 打开“设置 → 日志文件”，可以先点“修改日志地址”把日志放到一个方便找的目录；
+3. 把该目录里的 `app.log` 发到 GitHub Issue，并写明设备品牌/型号和连接方式。
+
+日志可能包含设备名称和接口路径；提交前请确认没有不希望公开的内容。
 
 ---
 
@@ -153,7 +165,7 @@ Windows 可能会提示“未知发布者”，这是免费工具的常见提示
 - 设备品牌和型号
 - 连接方式（2.4G 接收器 / 蓝牙 / 有线）
 - 程序里显示的状态
-- 日志文件 `%LOCALAPPDATA%\VitaTrace\logs\app.log` 的最后一段
+- 日志文件（默认 `%LOCALAPPDATA%\VitaTrace\logs\app.log`，可在设置里修改路径）的最后一段；日志里已包含 VID/PID、HID 接口和协议尝试结果
 
 日志里可能包含设备名称和连接信息，提交前请确认没有不希望公开的内容。
 

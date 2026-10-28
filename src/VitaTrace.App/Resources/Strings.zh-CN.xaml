@@ -85,6 +85,8 @@
     <sys:String x:Key="AboutPrivacy">设备信息、电量历史与设置都保存在本机。软件不会上传数据，也不需要管理员权限。</sys:String>
     <sys:String x:Key="Version">版本</sys:String>
     <sys:String x:Key="LogFile">日志文件</sys:String>
+    <sys:String x:Key="ChangeLogPath">修改日志地址</sys:String>
+    <sys:String x:Key="ChangeLogPathTitle">选择日志保存目录</sys:String>
     <sys:String x:Key="OpenLogFolder">打开日志目录</sys:String>
     <sys:String x:Key="DataFolder">数据目录</sys:String>
     <sys:String x:Key="OpenDataFolder">打开数据目录</sys:String>

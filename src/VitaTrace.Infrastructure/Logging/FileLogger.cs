@@ -19,15 +19,51 @@ public sealed class FileLogger : IAppLogger
 
     public FileLogger(string logFilePath)
     {
-        LogFilePath = logFilePath;
-        var directory = Path.GetDirectoryName(logFilePath);
-        if (!string.IsNullOrEmpty(directory))
+        if (!TrySwitchTo(logFilePath, out var error))
         {
-            Directory.CreateDirectory(directory);
+            throw new IOException($"日志文件不可写：{error}");
         }
     }
 
-    public string LogFilePath { get; }
+    /// <summary>当前日志文件完整路径。切换目录时原地更新，已有读取器引用不需要重建。</summary>
+    public string LogFilePath { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// 切换日志文件。只在目录可写、文件可创建时生效；失败时保留旧路径。
+    /// 用“先创建空文件再切换”的顺序，避免设置已保存但日志实际写不进去。
+    /// </summary>
+    public bool TrySwitchTo(string logFilePath, out string error)
+    {
+        try
+        {
+            var fullPath = Path.GetFullPath(logFilePath);
+            var directory = Path.GetDirectoryName(fullPath);
+            if (string.IsNullOrWhiteSpace(directory))
+            {
+                error = "路径中没有有效的目录";
+                return false;
+            }
+
+            Directory.CreateDirectory(directory);
+            if (!File.Exists(fullPath))
+            {
+                File.WriteAllText(fullPath, string.Empty, Utf8WithBom);
+            }
+
+            lock (_gate)
+            {
+                LogFilePath = fullPath;
+            }
+
+            error = string.Empty;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            return false;
+        }
+    }
 
     public void Info(string message) => Write("INFO", message, null);
 

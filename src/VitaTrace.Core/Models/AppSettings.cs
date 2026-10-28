@@ -28,6 +28,12 @@ public sealed class AppSettings
 
     public bool LowBatteryNotifications { get; set; } = true;
 
+    /// <summary>
+    /// 自定义日志目录。为空时使用 %LOCALAPPDATA%\VitaTrace\logs；
+    /// 只影响日志文件，不移动设置/历史等应用数据。
+    /// </summary>
+    public string? LogDirectory { get; set; }
+
     public string? LastSelectedDeviceId { get; set; }
 
     /// <summary>设备 Id → 用户别名。设备重连后 Id 稳定时别名仍有效。</summary>
@@ -45,6 +51,7 @@ public sealed class AppSettings
             StartWithWindows = StartWithWindows,
             MinimizeToTrayOnClose = MinimizeToTrayOnClose,
             LowBatteryNotifications = LowBatteryNotifications,
+            LogDirectory = LogDirectory,
             LastSelectedDeviceId = LastSelectedDeviceId,
             Aliases = new Dictionary<string, string>(Aliases, StringComparer.OrdinalIgnoreCase)
         };
@@ -65,6 +72,7 @@ public sealed class AppSettings
         RefreshSeconds = Math.Clamp(RefreshSeconds, 15, 3600);
         LowBatteryThreshold = Math.Clamp(LowBatteryThreshold, 5, 50);
         HistoryRetentionDays = Math.Clamp(HistoryRetentionDays, 7, 365);
+        LogDirectory = string.IsNullOrWhiteSpace(LogDirectory) ? null : LogDirectory.Trim();
         Aliases = Aliases is null
             ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             : new Dictionary<string, string>(Aliases, StringComparer.OrdinalIgnoreCase);

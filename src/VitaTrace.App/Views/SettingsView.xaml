@@ -213,10 +213,16 @@
                             <TextBlock Text="{Binding LogPath}" Style="{StaticResource TinyTextStyle}"
                                        TextTrimming="CharacterEllipsis" Margin="0,3,0,0" />
                         </StackPanel>
-                        <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}"
-                                Content="{DynamicResource OpenLogFolder}"
-                                Command="{Binding OpenLogCommand}"
-                                VerticalAlignment="Center" Margin="12,0,0,0" />
+                        <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                    VerticalAlignment="Center" Margin="12,0,0,0">
+                            <Button Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="{DynamicResource ChangeLogPath}"
+                                    Click="ChangeLogPath_Click" />
+                            <Button Style="{StaticResource SecondaryButtonStyle}"
+                                    Content="{DynamicResource OpenLogFolder}"
+                                    Command="{Binding OpenLogCommand}"
+                                    Margin="8,0,0,0" />
+                        </StackPanel>
                     </Grid>
                 </Border>
 

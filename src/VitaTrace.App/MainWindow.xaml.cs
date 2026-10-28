@@ -334,7 +334,8 @@ public partial class MainWindow : Window
         _settingsViewModel = new SettingsViewModel(
             _app.Settings.Clone(),
             _app.ApplySettings,
-            _app.Localization);
+            _app.Localization,
+            () => _app.LogFilePath);
         _settingsViewModel.CloseRequested += OnSettingsCloseRequested;
         SettingsPage.Activate(_settingsViewModel);
     }

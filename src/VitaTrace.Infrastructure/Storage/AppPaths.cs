@@ -30,11 +30,33 @@ public static class AppPaths
     /// <summary>演示模式使用独立设置，避免覆盖真实配置。</summary>
     public static string DemoSettingsFile => Path.Combine(Root, "settings.demo.json");
 
-    public static string LogDirectory => Path.Combine(Root, "logs");
+    public static string DefaultLogDirectory => Path.Combine(Root, "logs");
+
+    public static string LogDirectory => DefaultLogDirectory;
 
     public static string LogFile => Path.Combine(LogDirectory, "app.log");
 
     public static string DemoLogFile => Path.Combine(LogDirectory, "demo.log");
+
+    /// <summary>
+    /// 解析用户自定义日志目录。空值回退默认目录；相对路径按当前目录展开为绝对路径。
+    /// 这里不创建目录，真正的可写性由 FileLogger.TrySwitchTo 验证。
+    /// </summary>
+    public static string ResolveLogDirectory(string? customDirectory)
+    {
+        if (string.IsNullOrWhiteSpace(customDirectory))
+        {
+            return DefaultLogDirectory;
+        }
+
+        return Path.GetFullPath(customDirectory.Trim());
+    }
+
+    /// <summary>日志统一写 app.log，目录由设置决定。</summary>
+    public static string ResolveLogFile(string? customDirectory)
+    {
+        return Path.Combine(ResolveLogDirectory(customDirectory), "app.log");
+    }
 
     /// <summary>历史使用 JSON 文件（当前无第三方 SQLite 依赖），仍放在应用数据目录。</summary>
     public static string HistoryFile => Path.Combine(Root, "history.json");

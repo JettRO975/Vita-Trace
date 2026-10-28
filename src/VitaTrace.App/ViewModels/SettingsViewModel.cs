@@ -26,6 +26,7 @@ public sealed class SettingsViewModel : ObservableObject
     private readonly AppSettings _draft;
     private readonly Func<AppSettings, SettingsSaveResult> _apply;
     private readonly LocalizationService _l10n;
+    private readonly Func<string>? _logPathProvider;
 
     private string _theme;
     private string _language;
@@ -40,11 +41,13 @@ public sealed class SettingsViewModel : ObservableObject
     public SettingsViewModel(
         AppSettings draft,
         Func<AppSettings, SettingsSaveResult> apply,
-        LocalizationService localization)
+        LocalizationService localization,
+        Func<string>? logPathProvider = null)
     {
         _draft = draft;
         _apply = apply;
         _l10n = localization;
+        _logPathProvider = logPathProvider;
 
         _theme = draft.Theme == "system" ? "sea" : draft.Theme;
         _draft.Theme = _theme;
@@ -72,7 +75,8 @@ public sealed class SettingsViewModel : ObservableObject
         };
 
         SaveCommand = new RelayCommand(Save);
-        CancelCommand = new RelayCommand(() => CloseRequested?.Invoke(this, EventArgs.Empty));        OpenLogCommand = new RelayCommand(() => AppPaths.OpenInExplorer(AppPaths.LogDirectory));
+        CancelCommand = new RelayCommand(() => CloseRequested?.Invoke(this, EventArgs.Empty));
+        OpenLogCommand = new RelayCommand(() => AppPaths.OpenInExplorer(LogPath));
         OpenDataCommand = new RelayCommand(() => AppPaths.OpenInExplorer(AppPaths.Root));
     }
 
@@ -155,7 +159,21 @@ public sealed class SettingsViewModel : ObservableObject
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-    public string LogPath => AppPaths.LogFile;
+    public string LogPath => _logPathProvider?.Invoke() ?? AppPaths.LogFile;
+
+    /// <summary>设置页“修改日志地址”使用；保存失败时恢复原来的日志目录。</summary>
+    public bool ChangeLogDirectory(string? directory)
+    {
+        var previous = _draft.LogDirectory;
+        _draft.LogDirectory = string.IsNullOrWhiteSpace(directory) ? null : directory.Trim();
+        if (AutoSave())
+        {
+            return true;
+        }
+
+        _draft.LogDirectory = previous;
+        return false;
+    }
 
     public string DataPath => AppPaths.Root;
 
@@ -213,6 +231,7 @@ public sealed class SettingsViewModel : ObservableObject
         }
 
         Saved?.Invoke(this, EventArgs.Empty);
+        OnPropertyChanged(nameof(LogPath));
         return true;
     }
 
