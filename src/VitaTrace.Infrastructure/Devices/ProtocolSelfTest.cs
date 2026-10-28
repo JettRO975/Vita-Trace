@@ -122,6 +122,47 @@ public static class ProtocolSelfTest
             razerRequest.Length == 91 && razerRequest[89] == razerCrc && razerRequest[90] == 0,
             $"len={razerRequest.Length} crc=0x{razerRequest[89]:X2} expect=0x{razerCrc:X2}");
 
+        // MCHOSE Realtek 0x13/0x1D：公开样例 0xA2 ^ 0xFF = 0x5D = 93%。
+        var mchoseRealtek = new byte[]
+        {
+            0x13, 0x1D, 0xFE, 0xFE, 0xFF, 0xA2,
+            0xFD, 0xFD, 0xF9, 0xD9, 0xB3, 0xC8, 0xDF, 0xAF, 0x8D, 0x90
+        };
+        Check(
+            "MCHOSE Realtek 0x1D",
+            MchoseRealtekBatteryReader.TryParseFrame(mchoseRealtek, out var mrPct, out var mrWired, out _) &&
+            mrPct == 93 && !mrWired,
+            $"pct={mrPct} wired={mrWired}");
+
+        var mchoseWired = (byte[])mchoseRealtek.Clone();
+        mchoseWired[4] = 0xFE; // ^0xFF = 1，有线
+        Check(
+            "MCHOSE Realtek 有线标志",
+            MchoseRealtekBatteryReader.TryParseFrame(mchoseWired, out _, out var mrWired2, out _) && mrWired2,
+            "有线标志未识别");
+
+        // Cherry：前缀 + byte8=50、byte9=1。
+        var cherry = new byte[64];
+        cherry[0] = 0x04;
+        cherry[1] = 0x20;
+        cherry[2] = 0x00;
+        cherry[3] = 0x1A;
+        cherry[4] = 0x06;
+        cherry[8] = 50;
+        cherry[9] = 1;
+        Check(
+            "Cherry 64B",
+            CherryBatteryReader.TryParseResponse(cherry, out var chPct, out var chCharging, out _) &&
+            chPct == 50 && chCharging,
+            $"pct={chPct} charging={chCharging}");
+
+        var cherryBad = (byte[])cherry.Clone();
+        cherryBad[3] = 0x99;
+        Check(
+            "Cherry 拒绝坏前缀",
+            !CherryBatteryReader.TryParseResponse(cherryBad, out _, out _, out _),
+            "坏前缀被接受");
+
         logger.Info($"SELFTEST 完成：{passed} passed, {failed} failed");
         return failed == 0;
     }

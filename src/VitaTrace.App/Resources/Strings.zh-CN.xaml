@@ -123,6 +123,8 @@
     <sys:String x:Key="SourceHidpp">罗技 HID++</sys:String>
     <sys:String x:Key="SourceCompxHid">CompX 厂商协议</sys:String>
     <sys:String x:Key="SourceMchoseHid">迈从键盘状态帧 0x13/0x4A</sys:String>
+    <sys:String x:Key="SourceMchoseRealtekHid">迈从 Realtek 推送帧 0x13/0x1D</sys:String>
+    <sys:String x:Key="SourceCherryHid">Cherry 64 字节 Output</sys:String>
     <sys:String x:Key="SourceRapooHid">雷柏 2.4G 状态帧</sys:String>
     <sys:String x:Key="SourceRazerHid">雷蛇 90 字节 Feature</sys:String>
     <sys:String x:Key="SourceStandardHid">标准 HID</sys:String>

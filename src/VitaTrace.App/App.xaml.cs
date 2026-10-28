@@ -342,6 +342,8 @@ public partial class App : Application
                 ("Nordic54", device => new Nordic54BatteryReader(Logger).ProbeAsync(device)),
                 ("CompX", device => new CompxBatteryReader(Logger).ProbeAsync(device)),
                 ("MCHOSE", device => new MchoseBatteryReader(Logger).ProbeAsync(device)),
+                ("MCHOSE-Realtek", device => new MchoseRealtekBatteryReader(Logger).ProbeAsync(device)),
+                ("Cherry", device => new CherryBatteryReader(Logger).ProbeAsync(device)),
                 ("Razer-HID", device => new RazerBatteryReader(Logger).ProbeAsync(device)),
                 ("Standard-HID", device => new StandardHidBatteryReader(Logger).ProbeAsync(device))
             };
@@ -506,6 +508,8 @@ public partial class App : Application
                 new Nordic54BatteryReader(Logger),
                 new CompxBatteryReader(Logger),
                 new MchoseBatteryReader(Logger),
+                new MchoseRealtekBatteryReader(Logger),
+                new CherryBatteryReader(Logger),
                 new RazerBatteryReader(Logger),
                 new StandardHidBatteryReader(Logger)
             },

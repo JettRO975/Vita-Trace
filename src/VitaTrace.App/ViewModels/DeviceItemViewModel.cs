@@ -119,6 +119,8 @@ public sealed class DeviceItemViewModel : ObservableObject
         BatterySource.LogitechHidpp => _l10n["SourceHidpp"],
         BatterySource.CompxHid => _l10n["SourceCompxHid"],
         BatterySource.MchoseHid => _l10n["SourceMchoseHid"],
+        BatterySource.MchoseRealtekHid => _l10n["SourceMchoseRealtekHid"],
+        BatterySource.CherryHid => _l10n["SourceCherryHid"],
         BatterySource.RapooHid => _l10n["SourceRapooHid"],
         BatterySource.RazerHid => _l10n["SourceRazerHid"],
         BatterySource.StandardHid => _l10n["SourceStandardHid"],

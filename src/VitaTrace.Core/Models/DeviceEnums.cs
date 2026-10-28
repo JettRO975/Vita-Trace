@@ -64,6 +64,10 @@ public enum BatterySource
     CompxHid,
     /// <summary>迈从 0x11/0x13 报告协议（目前只确认部分鼠标型号）。</summary>
     MchoseHid,
+    /// <summary>迈从 Realtek 方案（VID 0x5253）的 0x13/0x1D 主动推送帧。</summary>
+    MchoseRealtekHid,
+    /// <summary>Cherry 64 字节 Output Report 协议。</summary>
+    CherryHid,
     /// <summary>雷柏 2.4G 接收器主动推送的 FF00:0002 状态帧（只读，不发送命令）。</summary>
     RapooHid,
     /// <summary>雷蛇 90 字节 Feature Report（class 0x02 / id 0x07）。</summary>
