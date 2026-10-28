@@ -23,10 +23,7 @@ public partial class SettingsView : UserControl
         nameof(SettingsViewModel.Language),
         nameof(SettingsViewModel.RefreshSeconds),
         nameof(SettingsViewModel.LowBatteryThreshold),
-        nameof(SettingsViewModel.HistoryRetentionDays),
-        nameof(SettingsViewModel.StartWithWindows),
-        nameof(SettingsViewModel.MinimizeToTrayOnClose),
-        nameof(SettingsViewModel.LowBatteryNotifications)
+        nameof(SettingsViewModel.HistoryRetentionDays)
     };
 
     private SettingsViewModel? _viewModel;
@@ -182,6 +179,24 @@ public partial class SettingsView : UserControl
         }
 
         base.OnPreviewKeyDown(e);
+    }
+
+    /// <summary>
+    /// 开关的保存不依赖 PropertyChanged：某些模板/键盘操作下事件时序不稳定，
+    /// 直接以 Click 作为“用户已经完成一次切换”的可靠落点。
+    /// </summary>
+    private void SettingToggle_Click(object sender, RoutedEventArgs e)
+    {
+        if (_viewModel is null)
+        {
+            return;
+        }
+
+        // Click 触发时 IsChecked 已完成更新；用 Background 优先级让绑定先写回 VM。
+        Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+        {
+            _viewModel?.AutoSave();
+        }));
     }
 
     /// <summary>

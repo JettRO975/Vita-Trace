@@ -6,7 +6,7 @@
     <Deterministic>true</Deterministic>
     <Company>Vita Trace</Company>
     <Product>Vita Trace</Product>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <!-- 中文注释是项目约定；生成代码与第三方代码不在此列 -->
     <GenerateDocumentationFile>false</GenerateDocumentationFile>

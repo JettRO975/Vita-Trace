@@ -165,6 +165,7 @@
                             </StackPanel>
                             <CheckBox Grid.Column="1" Style="{StaticResource ToggleSwitchStyle}"
                                       IsChecked="{Binding StartWithWindows, Mode=TwoWay}"
+                                      Click="SettingToggle_Click"
                                       VerticalAlignment="Center" />
                         </Grid>
 
@@ -180,6 +181,7 @@
                             </StackPanel>
                             <CheckBox Grid.Column="1" Style="{StaticResource ToggleSwitchStyle}"
                                       IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
+                                      Click="SettingToggle_Click"
                                       VerticalAlignment="Center" />
                         </Grid>
 
@@ -195,6 +197,7 @@
                             </StackPanel>
                             <CheckBox Grid.Column="1" Style="{StaticResource ToggleSwitchStyle}"
                                       IsChecked="{Binding LowBatteryNotifications, Mode=TwoWay}"
+                                      Click="SettingToggle_Click"
                                       VerticalAlignment="Center" />
                         </Grid>
                     </StackPanel>

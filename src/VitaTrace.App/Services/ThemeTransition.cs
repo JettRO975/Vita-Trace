@@ -80,7 +80,9 @@ public static class ThemeTransition
                 Math.Max(Distance(origin, new Point(0, 0)), Distance(origin, new Point(host.ActualWidth, 0))),
                 Math.Max(Distance(origin, new Point(0, host.ActualHeight)), Distance(origin, new Point(host.ActualWidth, host.ActualHeight))));
 
-            return new Snapshot(window, host, bitmap, origin, maxRadius + 8);
+            // 终点必须明显越过最远角：如果刚好等于角距离，遮罩最外圈仍是旧主题，
+            // 动画结束移除遮罩时右下角会“啪”地跳一下。多留 25% 半径让最远角提前完成。
+            return new Snapshot(window, host, bitmap, origin, maxRadius * 1.25 + 24);
         }
 
         public void Show()
