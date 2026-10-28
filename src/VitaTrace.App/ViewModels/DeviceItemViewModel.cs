@@ -124,6 +124,7 @@ public sealed class DeviceItemViewModel : ObservableObject
         BatterySource.RapooHid => _l10n["SourceRapooHid"],
         BatterySource.RazerHid => _l10n["SourceRazerHid"],
         BatterySource.StandardHid => _l10n["SourceStandardHid"],
+        BatterySource.AsusRogHid => _l10n["SourceAsusRog"],
         BatterySource.Manual => _l10n["SourceManual"],
         _ => _l10n["SourceNone"]
     };

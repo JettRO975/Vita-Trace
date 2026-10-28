@@ -345,7 +345,9 @@ public partial class App : Application
                 ("MCHOSE-Realtek", device => new MchoseRealtekBatteryReader(Logger).ProbeAsync(device)),
                 ("Cherry", device => new CherryBatteryReader(Logger).ProbeAsync(device)),
                 ("Razer-HID", device => new RazerBatteryReader(Logger).ProbeAsync(device)),
-                ("Standard-HID", device => new StandardHidBatteryReader(Logger).ProbeAsync(device))
+                ("Standard-HID", device => new StandardHidBatteryReader(Logger).ProbeAsync(device)),
+                ("ASUS-ROG", device => new AsusRogBatteryReader(Logger).ProbeAsync(device)),
+                ("Logitech-HID++", device => new LogitechHidppBatteryReader(Logger).ProbeAsync(device))
             };
 
             foreach (var device in devices)
@@ -511,7 +513,9 @@ public partial class App : Application
                 new MchoseRealtekBatteryReader(Logger),
                 new CherryBatteryReader(Logger),
                 new RazerBatteryReader(Logger),
-                new StandardHidBatteryReader(Logger)
+                new StandardHidBatteryReader(Logger),
+                new AsusRogBatteryReader(Logger),
+                new LogitechHidppBatteryReader(Logger)
             },
             _historyStore,
             () => Settings,

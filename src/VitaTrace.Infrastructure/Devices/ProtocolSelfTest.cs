@@ -163,6 +163,74 @@ public static class ProtocolSelfTest
             !CherryBatteryReader.TryParseResponse(cherryBad, out _, out _, out _),
             "坏前缀被接受");
 
+        // ROG 鼠标：report ID 0，命令 0x0712，payload[0]=50，payload[5]=1。
+        var rogMouse = new byte[64];
+        rogMouse[0] = 0x00;
+        rogMouse[1] = 0x12;
+        rogMouse[2] = 0x07;
+        rogMouse[4] = 50;
+        rogMouse[9] = 1;
+        Check(
+            "ROG Mouse 0x0712",
+            AsusRogBatteryReader.TryParseResponse(rogMouse, 0x00, false, false, out var rogPct, out var rogChg, out _) &&
+            rogPct == 50 && rogChg,
+            $"pct={rogPct} charging={rogChg}");
+
+        // ROG 键盘：report ID 0，命令 0x1201，payload[1]=75，payload[4]=1。
+        var rogKeyboard = new byte[64];
+        rogKeyboard[0] = 0x00;
+        rogKeyboard[1] = 0x01;
+        rogKeyboard[2] = 0x12;
+        rogKeyboard[5] = 75;
+        rogKeyboard[8] = 1;
+        Check(
+            "ROG Keyboard 0x1201",
+            AsusRogBatteryReader.TryParseResponse(rogKeyboard, 0x00, true, false, out var rogKbPct, out var rogKbChg, out _) &&
+            rogKbPct == 75 && rogKbChg,
+            $"pct={rogKbPct} charging={rogKbChg}");
+
+        // OMNI 接收器 report ID 3，命令字段后移 1 字节。
+        var rogOmni = new byte[64];
+        rogOmni[0] = 0x03;
+        rogOmni[2] = 0x12;
+        rogOmni[3] = 0x07;
+        rogOmni[5] = 60;
+        rogOmni[10] = 1;
+        Check(
+            "ROG OMNI report 3",
+            AsusRogBatteryReader.TryParseResponse(rogOmni, 0x03, false, false, out var rogOmniPct, out var rogOmniChg, out _) &&
+            rogOmniPct == 60 && rogOmniChg,
+            $"pct={rogOmniPct} charging={rogOmniChg}");
+
+        var rogSleep = (byte[])rogMouse.Clone();
+        rogSleep[1] = 0xFF;
+        rogSleep[2] = 0xAA;
+        Check(
+            "ROG 拒绝休眠 FF AA",
+            !AsusRogBatteryReader.TryParseResponse(rogSleep, 0x00, false, false, out _, out _, out _),
+            "休眠帧被当作电量");
+
+        // Logitech HID++ 0x1004：report 0x11、index 1、feature 5、byte4=80、byte6=1。
+        var logitech = new byte[20];
+        logitech[0] = 0x11;
+        logitech[1] = 0x01;
+        logitech[2] = 0x05;
+        logitech[3] = 0x1A;
+        logitech[4] = 80;
+        logitech[6] = 1;
+        Check(
+            "Logitech HID++ 0x1004",
+            LogitechHidppBatteryReader.TryParseBatteryResponse(logitech, 0x01, 0x05, out var logiPct, out var logiChg, out _) &&
+            logiPct == 80 && logiChg,
+            $"pct={logiPct} charging={logiChg}");
+
+        var logitechBad = (byte[])logitech.Clone();
+        logitechBad[2] = 0x06;
+        Check(
+            "Logitech 拒绝错误 feature",
+            !LogitechHidppBatteryReader.TryParseBatteryResponse(logitechBad, 0x01, 0x05, out _, out _, out _),
+            "错误 feature 被接受");
+
         logger.Info($"SELFTEST 完成：{passed} passed, {failed} failed");
         return failed == 0;
     }

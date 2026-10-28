@@ -74,6 +74,8 @@ public enum BatterySource
     RazerHid,
     /// <summary>标准 HID Battery Strength（Usage Page 0x06 / Usage 0x20）。</summary>
     StandardHid,
+    /// <summary>ASUS ROG 64/65 字节厂商 HID 协议（实验）。</summary>
+    AsusRogHid,
     /// <summary>用户手动输入（未来的兜底功能，默认关闭）。</summary>
     Manual
 }

@@ -334,19 +334,49 @@ public sealed class WindowsHidDeviceEnumerator : IDeviceEnumerator
                                    (compxWireless is not null || nordicWireless is not null) &&
                                    ClassifyKind(group) != DeviceKind.Keyboard;
 
+            // 罗技 Unifying/Bolt/Lightspeed 接收器本身没有电池，电池在配对设备通道 1..6。
+            // 这里把接收器投影成“无线鼠标/键盘”卡片，避免把通道 1 的电量挂在接收器上。
+            // 只建一个逻辑设备，读取器取第一个有效通道（按用户确认的范围）。
+            var logitechHidpp = group.FirstOrDefault(i =>
+                i.VendorId == 0x046D &&
+                i.UsagePage is 0xFF00 or 0xFF43 &&
+                i.InputReportLength >= 20 &&
+                i.OutputReportLength >= 20);
+            var isLogitechWireless = primary.VendorId == 0x046D &&
+                                     isReceiver &&
+                                     logitechHidpp is not null &&
+                                     ClassifyKind(group) is DeviceKind.Mouse or DeviceKind.Keyboard;
+            var logitechKind = isLogitechWireless ? ClassifyKind(group) : DeviceKind.Other;
+
+            // ROG 的 2.4G 接收器本身没有电池；把 64/65 字节厂商集合投影成
+            // “ROG 无线设备”，由 AsusRogBatteryReader 依次试鼠标/键盘命令。
+            var asusRogHid = group.FirstOrDefault(i =>
+                i.VendorId == 0x0B05 &&
+                i.UsagePage is 0xFF01 or 0xFF00 &&
+                i.InputReportLength >= 64 &&
+                i.OutputReportLength >= 64);
+            var isAsusRogWireless = primary.VendorId == 0x0B05 &&
+                                    isReceiver &&
+                                    asusRogHid is not null;
+            var asusRogKind = isAsusRogWireless ? ClassifyKind(group) : DeviceKind.Other;
+
             var kind = isMchoseKeyboardDongle
                 ? DeviceKind.Keyboard
                 : isAtkMouseDongle
                     ? DeviceKind.Mouse
-                    : isReceiver
-                        ? DeviceKind.Receiver
-                        : ClassifyKind(group);
+                    : isLogitechWireless
+                        ? logitechKind
+                        : isAsusRogWireless
+                            ? asusRogKind
+                            : isReceiver
+                                ? DeviceKind.Receiver
+                                : ClassifyKind(group);
 
-            var connection = isReceiver || isRapooBatteryDongle || isMchoseKeyboardDongle || isAtkMouseDongle
+            var connection = isReceiver || isRapooBatteryDongle || isMchoseKeyboardDongle || isAtkMouseDongle || isLogitechWireless || isAsusRogWireless
                 ? ConnectionKind.UsbReceiver
                 : primary.Connection;
 
-            var batteryStatus = isMchoseKeyboardDongle || isAtkMouseDongle
+            var batteryStatus = isMchoseKeyboardDongle || isAtkMouseDongle || isLogitechWireless || isAsusRogWireless
                 ? BatteryStatus.Unknown
                 : isReceiver || (!isRapooBatteryDongle && connection == ConnectionKind.Wired)
                     ? BatteryStatus.Wired
@@ -361,22 +391,27 @@ public sealed class WindowsHidDeviceEnumerator : IDeviceEnumerator
                 ? "SINOWEALTH 2.4G 键盘"
                 : isAtkMouseDongle
                     ? $"{FirstNonEmpty(primary.Manufacturer, "ATK/VXE")} 2.4G 鼠标"
-                    : isReceiver
-                        ? FirstNonEmpty(
-                            receiverInterface?.DisplayName,
-                            string.IsNullOrWhiteSpace(primary.Manufacturer)
-                                ? null
-                                : $"{primary.Manufacturer} USB 接收器",
-                            "USB 接收器")
-                        : primary.DisplayName;
+                    : isLogitechWireless
+                        ? logitechKind == DeviceKind.Mouse ? "Logitech 无线鼠标" : "Logitech 无线键盘"
+                        : isAsusRogWireless
+                            ? asusRogKind == DeviceKind.Keyboard ? "ASUS ROG 无线键盘" :
+                              asusRogKind == DeviceKind.Mouse ? "ASUS ROG 无线鼠标" : "ASUS ROG 无线设备"
+                            : isReceiver
+                                ? FirstNonEmpty(
+                                    receiverInterface?.DisplayName,
+                                    string.IsNullOrWhiteSpace(primary.Manufacturer)
+                                        ? null
+                                        : $"{primary.Manufacturer} USB 接收器",
+                                    "USB 接收器")
+                                : primary.DisplayName;
 
             devices.Add(new PeripheralDevice
             {
-                Id = (isReceiver && !isAtkMouseDongle ? "receiver:" : "hid:") + StableHash(primary.PhysicalId),
+                Id = (isLogitechWireless ? "logi:" : isAsusRogWireless ? "rog:" : isReceiver && !isAtkMouseDongle ? "receiver:" : "hid:") + StableHash(primary.PhysicalId),
                 DisplayName = displayName,
-                Model = isReceiver || isAtkMouseDongle || string.IsNullOrWhiteSpace(primary.Product) ? null : primary.Product,
+                Model = isReceiver || isAtkMouseDongle || isLogitechWireless || isAsusRogWireless || string.IsNullOrWhiteSpace(primary.Product) ? null : primary.Product,
                 Manufacturer = string.IsNullOrWhiteSpace(primary.Manufacturer) ? null : primary.Manufacturer,
-                SerialNumber = isReceiver || isAtkMouseDongle || string.IsNullOrWhiteSpace(primary.SerialNumber)
+                SerialNumber = isReceiver || isAtkMouseDongle || isLogitechWireless || isAsusRogWireless || string.IsNullOrWhiteSpace(primary.SerialNumber)
                     ? null
                     : primary.SerialNumber,
                 VendorId = primary.VendorId == 0 ? null : primary.VendorId,
